@@ -21,8 +21,6 @@ public class FileServerThread implements Runnable {
 	private int upDownStatus;
 	private String path;
 	private File file;
-	private long fileLength;
-
 	
 	public FileServerThread(DataInputStream disSocket, DataOutputStream dosSocket) {
 		this.disSocket = disSocket;
@@ -38,20 +36,16 @@ public class FileServerThread implements Runnable {
 			{
 				path = disSocket.readUTF();			// 파일 경로 받고
 				file = new File(path);
-				fileLength = file.length();			
-				dosSocket.writeLong(fileLength);	// 파일 크기 보내고
 				if( file.exists() )
 				{
 					dosSocket.writeUTF("Y");		// 파일 있으면 Y 값 보내고
-					if( disSocket.readUTF().equals("Y") )	// 확인 값 받으면
-						fileDown();					// 파일 전송 메서드 호출
+					fileDown();						// 파일 전송 메서드 호출
 				}
 				else
 					dosSocket.writeUTF("N");		// 파일 없으면 N 값 보내고 끝
 			}
 			else
 			{
-				fileLength = disSocket.readLong();	// 서버 용량 확인하고 (구현은 안함)
 				dosSocket.writeUTF("Y");			// 확인 값 보내고
 				path = disSocket.readUTF();			// 파일 경로 받고
 				file = new File(path);
