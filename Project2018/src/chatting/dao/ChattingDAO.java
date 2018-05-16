@@ -71,15 +71,69 @@ public class ChattingDAO {
 		return list;
 	}
 	
-	public static void main(String[] args) {
-		System.out.println("실행");
-		ChattingDAO dao = new ChattingDAO();
+	public Log findLog(String name) {
+		SqlSession session = null;
+		Log result = null;
 		
-		
-		for(Log l : dao.listLogs())
-		{
-			System.out.println(l);
+		try {
+			session = factory.openSession();
+			ChattingMapper mapper = session.getMapper(ChattingMapper.class);
+			result = mapper.findLog(name);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if( session != null ) session.close();
 		}
 		
+		return result;
 	}
+	
+	public int getStdNo(String name) {
+		SqlSession session = null;
+		int result = 0;
+		
+		try {
+			session = factory.openSession();
+			ChattingMapper mapper = session.getMapper(ChattingMapper.class);
+			result = mapper.getStdNo(name);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if( session != null ) session.close();
+		}
+		
+		return result;
+	}
+	
+	public int logCount() {
+		SqlSession session = null;
+		int result = 0;
+		
+		try {
+			session = factory.openSession();
+			ChattingMapper mapper = session.getMapper(ChattingMapper.class);
+			result = mapper.logCount();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if( session != null ) session.close();
+		}
+		
+		return result;
+	}
+	
+//	
+//	
+//	public static void main(String[] args) {
+//		System.out.println("실행");
+//		ChattingDAO dao = new ChattingDAO();
+//		
+//		
+//		for(Log l : dao.listLogs())
+//		{
+//			System.out.println(l);
+//		}
+//		
+//	}
 }
