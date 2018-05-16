@@ -289,10 +289,12 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 		}
 		else if(source == b_upload)
 		{
+			data = new Data(id, null, null, Data.FILE_UP);
+			sendData(data);
 			JFileChooser send = new JFileChooser();
 			send.showOpenDialog(this);
 			File file = send.getSelectedFile();
-			//System.out.println(file.getName());
+			
 		}	
 		else if(source == b_download)
 		{
@@ -558,8 +560,9 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 					{
 						fileServer_port = data.getTargetId();
 					}
-					
 					break;
+				case Data.FILE_UP :
+					
 				}
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
