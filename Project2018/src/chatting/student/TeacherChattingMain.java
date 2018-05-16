@@ -146,14 +146,7 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 	private JScrollPane scrollPane_3;
 	private JTable table;
 	private File getFileList [];
-	/**
-	 * Launch the application.
-	 */
 
-
-	/**
-	 * Create the frame.
-	 */
 	public TeacherChattingMain(String id) {
 		
 		this.id = id;
@@ -232,7 +225,6 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 		file_list.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		file_list.setForeground(Color.LIGHT_GRAY);
 		file_list.addMouseListener(this);
-		//file_list.setDropMode(DropMode.INSERT_ROWS);
 		scrollPane.setViewportView(file_list);
 		
 		panel_9 = new JPanel();
@@ -309,8 +301,6 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 		setVisible(true);
 		connectServer();
 	
-		//li_userList.setListData(new String [] {id});
-		
 		addWindowListener(new WindowAdapter() 
 		{
 			public void windowOpened(WindowEvent e) 
@@ -360,24 +350,13 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 	{
 		Object source = e.getSource();
 		
-		
-		BufferedWriter out = null;
-		BufferedReader in = null;
-		
-		String message = ta_chatOutput.getText();
-		//data = new Data(id, message, Data.CHAT_MESSAGE);
-		//sendData(data);
-		
-		
-		StringTokenizer st = new StringTokenizer(message, "\n");
-		
 		if(source == tf_chatInput)
 		{	
-		String message1 = tf_chatInput.getText();
-		//ta_chatOutput.append("["+id+"]" + message1 +"\n");
-		data = new Data(id, message1, Data.CHAT_MESSAGE);
-		sendData(data);
-		tf_chatInput.setText("");
+			String message1 = tf_chatInput.getText();
+	
+			data = new Data(id, message1, Data.CHAT_MESSAGE);
+			sendData(data);
+			tf_chatInput.setText("");
 		}
 		else if(source == b_filelist)
 		{
@@ -401,7 +380,6 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 			}
 			File file = save.getSelectedFile();
 		}
-		
 		/*else if(source == mi_exit)
 		{
 			int choice = JOptionPane.showConfirmDialog(this, "정말로 종료 하겠습니까?", "종료", JOptionPane.YES_NO_OPTION);
@@ -412,57 +390,6 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 		
 			{
 				System.exit(0);
-			}
-		}
-		else if(source==mi_save)
-		{
-			JFileChooser save = new JFileChooser();
-			save.showSaveDialog(this);
-			File file = save.getSelectedFile();
-			
-			try 
-			{
-				out = new BufferedWriter(new FileWriter(file));
-				while(st.hasMoreTokens())
-				{
-					String s = st.nextToken();
-					out.write(s);
-					out.newLine();
-				}
-			} 
-			catch (IOException e1) 
-			{
-				e1.printStackTrace();
-			}
-			finally
-			{
-				try 
-				{
-					if(out!=null)
-					{	
-						out.close();
-					}
-				} 
-				catch (IOException e1) 
-				{
-					e1.printStackTrace();
-				}
-				
-			}		
-			
-		}	
-		else if(source==mi_text)
-		{
-			JFileChooser save = new JFileChooser();
-			save.showOpenDialog(this);
-			File file = save.getSelectedFile();
-			try 
-			{
-				in = new BufferedReader(new FileReader(file));
-			} 
-			catch (FileNotFoundException e1) 
-			{
-				e1.printStackTrace();
 			}
 		}	*/
 		else if(source == btn_send)
@@ -492,111 +419,6 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 		{
 			
 		}
-		/* //트리용
-		else if( source == btn_create_folder )
-		{
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-			
-			if(node != null)
-			{
-				TreeNode[] tn = node.getPath();
-				
-				int index = tn.length;
-				if(node.getChildCount() == 0)
-				{
-					index -= 2;
-				}
-				else
-				{
-					index--;
-				}
-				
-				
-				int choice = JOptionPane.showConfirmDialog(this, tn[index]+"폴더에 새로운 폴더를 생성하시겠습니까?", "종료", JOptionPane.YES_NO_OPTION);
-				if( choice == JOptionPane.YES_OPTION )
-				{
-					String path="";				
-					for(int i = 1; i <= index; i++)
-					{
-						path += tn[i]+"\\";
-					}
-					
-					System.out.println(path);
-					
-					data = new Data(id, path+"test", Data.FILE_CREATE);
-					sendData(data);
-					
-					data = new Data(id, null, Data.CHAT_TREE);
-					sendData(data);
-				}
-			}
-			else
-			{
-				System.out.println("폴더를 생성할 경로를 선택하세요.");
-			}
-		}
-		else if( source == btn_delete_folder )
-		{
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-			
-			if(node != null)
-			{
-				TreeNode[] tn = node.getPath();
-				
-				int index = tn.length;
-				if(node.getChildCount() == 0)
-				{
-					index -= 2;
-				}
-				else
-				{
-					index--;
-				}
-				
-				
-				int choice = JOptionPane.showConfirmDialog(this, tn[index]+"폴더를 삭제 하시겠습니까?", "종료", JOptionPane.YES_NO_OPTION);
-				if( choice == JOptionPane.YES_OPTION )
-				{
-					String path="";				
-					// 여긴 마지막 노드까지 나와야 해서 길이만큼 뽑어야 함.
-					for(int i = 1; i < tn.length; i++)
-					{
-						path += tn[i]+"\\";
-					}
-					
-					System.out.println(path);
-					
-					data = new Data(id, path, Data.FILE_DELETE);
-					sendData(data);
-					
-					data = new Data(id, null, Data.CHAT_TREE);
-					sendData(data);
-				}
-			}
-			else
-			{
-				System.out.println("폴더를 생성할 경로를 선택하세요.");
-			}
-			
-		}
-		
-		else if( source == btn_download)
-		{
-			node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-			if (node != null && (node.getChildCount() == 0) ) 
-			{
-				String path="";
-				TreeNode[] tn = node.getPath();			
-				for(int i = 1; i < tn.length; i++)
-				{
-					path += tn[i]+"\\";
-				}
-				
-				System.out.println(path.substring(0, path.length()-1));
-	    		ftpconnect(path.substring(0, path.length()-1),0);
-			}
-		}
-		*/
 		else if( source == btn_cancel)
 		{
 			FtpClientThread.isCancel = true;
@@ -611,8 +433,6 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 	}
 
 	
-	
-
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(e.getClickCount()==2)
@@ -621,11 +441,6 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 			{
 				String parent = "";
 				String [] path = file_str.split("\\\\"); //***파일에서 \\는 찾을 때 \를 기호로 인식하므로 \"처럼 \\\\써야함 
-				/*for(int i = 0 ; i < path.length-1 ; i++)
-				{
-					 parent += path[i] + "\\";
-				}
-				file_str = parent;*/
 				parent = path[0];
 				for(int i = 1 ; i < path.length-1 ; i++)
 				{
@@ -637,7 +452,6 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 			}
 			else 
 			{
-				//File file = new File(file_access+"\\"+li_fileList.getSelectedValue());
 				System.out.println(file_str+"\\"+file_list.getSelectedValue());
 				File f [] = getFileList;
 				System.out.println(f[0]);
@@ -657,14 +471,7 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 					
 				}	
 				sendData(data);
-				
-				/*if(file.isDirectory())
-				{
-					file_access += "\\"+li_fileList.getSelectedValue();
-				}*/	
-			
 			}
-			//getList();
 		}
 		
 	}
@@ -707,9 +514,6 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 	public void getList(File [] ff, String str_file)
 	{
 	
-		//String [] str = file.list();
-		//File [] f = file.listFiles();
-		
 		File [] f = ff;
 		
 		ArrayList<String> af = new ArrayList<String>();
@@ -778,7 +582,8 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 	{
 		Socket ftpclient;
 		
-		try {
+		try 
+		{
 			ftpclient = new Socket(SEVER_IP, 7778);
 			dos = new DataOutputStream(ftpclient.getOutputStream());
 			dis = new DataInputStream(ftpclient.getInputStream());
@@ -796,11 +601,11 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 		} 
 	}	
 	
-	public void closeAll(){
+	public void closeAll()
+	{
 		System.out.println("모든 자원 종료");
 		try { if(ois != null) {oos.close(); }} catch (IOException e) {}
 		try { if(oos != null) {ois.close();}} catch (IOException e) {}
-		
 	}
 
 	
@@ -809,9 +614,7 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 	public void run() 
 	{
 		try {
-			System.out.println("11111");
 			oos.writeObject(data);
-			System.out.println("222222");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -824,49 +627,61 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 				switch(data.getStatus())
 				{
 					case Data.CHAT_LOGIN :
-					case Data.CHAT_LOGOUT : 
-											ta_chatOutput.append("[" + data.getId() + "]" + data.getMessage() + "\n");
-											li_userList.setListData(data.getUserList());
-											break;
+					case Data.CHAT_LOGOUT :
+						ta_chatOutput.append("[" + data.getId() + "]" + data.getMessage() + "\n");
+						li_userList.setListData(data.getUserList());
+						break;
 											
 				   case Data.CHAT_MESSAGE : 
-										    ta_chatOutput.append("["+data.getId()+"]"+data.getMessage()+"\n");
-										    tf_chatInput.setText("");
-										    
-											break;
+					    ta_chatOutput.append("["+data.getId()+"]"+data.getMessage()+"\n");
+					    tf_chatInput.setText("");
+						break;
 					case Data.CHAT_WHISPER : 
-											ta_chatOutput.append("["+data.getId()+"](귓말)"+data.getMessage()+"\n");
-											break;
+						ta_chatOutput.append("["+data.getId()+"](귓말)"+data.getMessage()+"\n");
+						break;
 					case Data.Log_ALL : 
-										content.clear();
-										for(Log l : data.getLog())
-										{
-											/*logContent.addElement(String.format
-											 * ("%c반   %s   %s   %-20s   %s   %c   %-30s   %ty\n", 
-													l.getClass_name(), l.getName(), l.getAdmin(), 
-													l.getGrants(), l.getAction(), l.getResult(), 
-													l.getLogs(), l.getDates()));*/
-											logContent.addElement(l.toString());
-										}	
-										list.setModel(logContent);
-										break;
+						String hh [] = {"1", "2", "3", "4", "5", "6", "7", "8"};
+						header = hh;
+						model = new DefaultTableModel(contents, header);
+						
+						ArrayList<Log> l = data.getLog();
+						contents = new String[l.size()][8];
+						
+						for(int i = 0 ; i < l.size() ; i++)
+						{
+							String [] s = l.get(i).toString().split(",");
+							contents[i] = s;
+						}	
+
+						model = new DefaultTableModel(contents, header);
+						
+						table.setModel(model);
+						
+						DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer();
+						cellRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+						TableColumnModel columnModel = table.getColumnModel();
+						for(int i = 0; i < columnModel.getColumnCount(); i++)
+						{
+							columnModel.getColumn(i).setCellRenderer(cellRenderer);
+						}
+
+						break;
 					case Data.FILE_ACCEPT : 
-											file_str = data.getMessage();
-											getFileList = data.getFile();
-											getList(getFileList, file_str);
-											System.out.println("file_accept " + data.getMessage());
-											break;
+						file_str = data.getMessage();
+						getFileList = data.getFile();
+						getList(getFileList, file_str);
+						System.out.println("file_accept " + data.getMessage());
+						break;
 					case Data.FILE_ACCESS : 
-											file_access = data.getMessage();
-											System.out.println("file_acccess " + data.getMessage());
-											data = new Data(id, file_access, null, Data.FILE_REQ);
-											sendData(data);
-											break;
+						file_access = data.getMessage();
+						System.out.println("file_acccess " + data.getMessage());
+						data = new Data(id, file_access, null, Data.FILE_REQ);
+						sendData(data);
+						break;
 					case Data.FILE_DOWN :
-												
-											break;
+						break;
 					case Data.FILE_UP : 	
-								break;			
+						break;			
 										
 				}	
 			} 

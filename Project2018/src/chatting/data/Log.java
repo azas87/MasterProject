@@ -20,8 +20,9 @@ public class Log implements Serializable{
 	private Date dates;
 	private Date time;
 	
-	private String grantList[] = {"ACC","UP","DN","NEW", "DEL"};
+	private String grantList[] = {"立加","诀","促款","积己", "昏力"};
 	private String actionList[] = {"秦力","立加","积己","昏力", "诀肺靛", "促款肺靛"};
+	
 	@Override
 	public String toString() 
 	{
@@ -32,14 +33,13 @@ public class Log implements Serializable{
 		{
 			if( (grants & mask) == mask )
 			{
-				grant_list+=grantList[i]+"|";
+				grant_list+=grantList[i]+" | ";
 				
 			}
 			mask <<= 1;
 		}
 		
-		return String.format("%c馆      %-7s     %-4s     %-20s    %s     %c    %-30s    y\n",
-				class_name, name, admin, grant_list, actionList[action], result, logs, dates );
+		return String.format("%c馆,%s,%s,%s,%s,%c,%s,y", class_name, name, admin, grant_list, actionList[action], result, logs, dates);
 		
 
 	}
