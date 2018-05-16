@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -12,6 +14,7 @@ import java.util.Vector;
 
 import chatting.dao.ChattingDAO;
 import chatting.data.Data;
+import chatting.data.Log;
 
 public class ChattingServerThread implements Runnable {
 
@@ -23,7 +26,9 @@ public class ChattingServerThread implements Runnable {
 	private static HashMap<String, ObjectOutputStream> userList = new HashMap<>();
 	private File path;
 	private String base_Path = "D:\\IT_Master";
-//	private File basePath = new File(base_Path);
+	private ChattingDAO dao = new ChattingDAO();
+	private SimpleDateFormat date = new SimpleDateFormat("yyyy/mm/dd");
+	private SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
 	
 	public ChattingServerThread(ObjectInputStream ois, ObjectOutputStream oos, int port) {
 		this.ois = ois;
@@ -50,6 +55,7 @@ public class ChattingServerThread implements Runnable {
 							list.add(id);
 						}
 						data.setUserList(list);
+						dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', "접속", date.format(new Date()), time.format(new Date())));
 						broadCasting();
 						break;
 						
@@ -70,17 +76,19 @@ public class ChattingServerThread implements Runnable {
 							list2.add(id);
 						}
 						data.setUserList(list2);
+						dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', "해제", date.format(new Date()), time.format(new Date())));
 						broadCasting();
 						break;
 					
 					case Data.Log_ALL:
-						ChattingDAO d = new ChattingDAO();
-						data.setLog(d.listLogs());
+						data.setLog(dao.listLogs());
 						broadCasting();
 						
 					case Data.FILE_UP:
 						data.setTargetId(port+"");
 						targetId = data.getId();
+//						dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', "", date.format(new Date()), time.format(new Date())));
+						// 업로드 파일 경로
 						userList.get(targetId).writeObject(data);
 						break;
 						
@@ -88,10 +96,11 @@ public class ChattingServerThread implements Runnable {
 						path = new File(data.getMessage());
 						if( path.exists() )
 						{
-							data.setMessage("Y");
+							data.setMessage("Y" + "|" + path.length());
 							data.setTargetId(port+"");
 						}
 						targetId = data.getId();
+						dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', fileNameSplit(), date.format(new Date()), time.format(new Date())));
 						userList.get(targetId).writeObject(data);
 						break;
 						
@@ -115,6 +124,7 @@ public class ChattingServerThread implements Runnable {
 						path = new File(data.getMessage());
 						path.mkdir();
 						getParent();
+						dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', fileNameSplit(), date.format(new Date()), time.format(new Date())));
 						broadCasting();
 						break;
 						
@@ -125,6 +135,7 @@ public class ChattingServerThread implements Runnable {
 						}
 						path.delete();
 						getParent();
+						dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', fileNameSplit(), date.format(new Date()), time.format(new Date())));
 						broadCasting();
 						break;
 						
@@ -173,6 +184,10 @@ public class ChattingServerThread implements Runnable {
 		data.setFile(parent.listFiles());
 		data.setStatus(Data.FILE_ACCEPT);
 	}
-
 	
+	public String fileNameSplit() {
+		String[] str = data.getMessage().split("IT_Master");
+		
+		return str[1];
+	}
 }

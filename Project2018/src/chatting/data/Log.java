@@ -17,11 +17,21 @@ public class Log implements Serializable{
 	private int logNo;
 	private char result;
 	private String logs;
-	private Date dates;
-	private Date time;
+	private String dates;
+	private String time;
 	
 	private String grantList[] = {"立加","诀","促款","积己", "昏力"};
 	private String actionList[] = {"秦力","立加","积己","昏力", "诀肺靛", "促款肺靛"};
+	
+	public Log(int action, int stdNo, int logNo, char result, String logs, String dates, String time) {
+		this.action = action;
+		this.stdNo = stdNo;
+		this.logNo = logNo;
+		this.result = result;
+		this.logs = logs;
+		this.dates = dates;
+		this.time = time;
+	}
 	
 	@Override
 	public String toString() 
@@ -140,16 +150,16 @@ public class Log implements Serializable{
 	public void setLogs(String logs) {
 		this.logs = logs;
 	}
-	public Date getDates() {
+	public String getDates() {
 		return dates;
 	}
-	public void setDates(Date dates) {
+	public void setDates(String dates) {
 		this.dates = dates;
 	}
-	public Date getTime() {
+	public String getTime() {
 		return time;
 	}
-	public void setTime(Date time) {
+	public void setTime(String time) {
 		this.time = time;
 	}
 	public String[] getGrantList() {
