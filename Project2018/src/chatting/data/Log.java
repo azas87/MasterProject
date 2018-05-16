@@ -25,15 +25,7 @@ public class Log implements Serializable{
 	
 	
 	
-	public Log(int action, int stdNo, int logNo, char result, String logs, String dates, String time) {
-		this.action = action;
-		this.stdNo = stdNo;
-		this.logNo = logNo;
-		this.result = result;
-		this.logs = logs;
-		this.dates = dates;
-		this.time = time;
-	}
+
 
 
 	@Override
