@@ -116,9 +116,10 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 	DefaultMutableTreeNode node;
 	public static JProgressBar progressbar;
 	public static JLabel lbl_per;
-	private String SEVER_IP = "127.0.0.1";
+//	private String SEVER_IP = "127.0.0.1";
 //	private String SEVER_IP = "203.233.196.50";
 //	private String SEVER_IP = "203.233.196.48";
+	private String SEVER_IP = "203.233.196.40";
 	
 	private FtpClientThread cst;
 	private JButton btn_cancel;
@@ -839,3 +840,4 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 			
 	}	
 }
+
