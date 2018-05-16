@@ -9,27 +9,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</insert>
 	
 	
-	
 	<select id="listLog" resultType="Log" >
 	
 		SELECT I.NAME, I.CLASS CLASS_NAME, I.ADMIN, I.GRANTS, L.ACTION, L.RESULT, L.LOGS, L.DATES, L.TIME FROM LOG L, INFO I WHERE L.STDNO = I.STDNO
 		
 	</select>
 	
+	<select id="findLog" parameterType="String" resultType="Log">
+		
+		SELECT I.NAME, I.CLASS CLASS_NAME, I.ADMIN, I.GRANTS, L.ACTION, L.RESULT, L.LOGS, L.DATES, L.TIME FROM LOG L, INFO I WHERE L.STDNO = I.STDNO
+		WHERE I.NAME = #{name}
+		
+	</select>
 	
-	<!-- 
+	<select id="getStdNo" parameterType="String" resultType="int">
+		
+		SELECT STDNO
+		FROM INFO
+		WHERE NAME = #{name}
+		
+	</select>
 	
-	<update id="updateUserAddr" parameterType="User">
-		UPDATE USERADDR SET PHONE=#{phone}, ADDRESS=#{address} WHERE ID=#{id}
-	</update>
+	<select id="logCount" resultType="int">
 	
-	<delete id="deleteUserInfo" parameterType="String">
-		DELETE USERINFO WHERE ID = #{id}
-	</delete>
-	
-	<delete id="deleteUserAddr" parameterType="String">
-		DELETE USERADDR WHERE ID = #{id}
-	</delete>
- -->
+		SELECT COUNT(*) FROM LOG
+			
+	</select>
 	
 </mapper>
