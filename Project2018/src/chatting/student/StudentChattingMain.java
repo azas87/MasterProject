@@ -4,11 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
@@ -17,10 +14,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -28,9 +22,9 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -38,29 +32,21 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.KeyStroke;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
 import chatting.data.Data;
-import javax.swing.JScrollBar;
-import javax.swing.ScrollPaneConstants;
 
 public class StudentChattingMain extends JFrame implements ActionListener, Runnable, MouseListener 
 {
@@ -112,7 +98,7 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 	private String file_str;
 	private JButton b_filelist;
 	private int fileServer_port;
-	private File getFileList [];
+	private HashMap<String, Boolean> HashMapFileList;
 	private	long parentFile_amount;
 	private long File_amount;
 	
@@ -538,9 +524,15 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 					break;
 				case Data.FILE_ACCEPT : 
 					file_str = data.getMessage();
-					getFileList = data.getFile();
-					getList(getFileList, file_str);
+					HashMapFileList = data.getFileList();
+					System.out.println("----------Data.FILE_ACCEPT-------------");
+					/*for(int i=0; i < FileList.length; i++)
+					{
+						System.out.println(FileList[i].getAbsolutePath()+"    "+ FileList[i].isDirectory() +"    " + FileList[i].exists());
+					}*/
 					System.out.println("file_accept " + data.getMessage());
+					getList(HashMapFileList, file_str);
+					
 					break;
 				case Data.FILE_ACCESS : 
 					file_access = data.getMessage();
@@ -550,20 +542,24 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 					break;
 				case Data.FILE_DOWN :
 					System.out.println("FILE_DOWN : " + data.getMessage());
-					String s [] = data.getMessage().split("|");
+					String s [] = data.getMessage().split("\\|");
 					//s[0] : y/n검사  s[1] : 용량
-					
+					System.out.println(file_str+"\\"+li_fileList.getSelectedValue());
 					if(s[0].equals("Y"))
 					{
+						System.out.println(s[0]);
+						System.out.println(s[1]);
 						fileServer_port = Integer.parseInt(data.getTargetId());						
 						File_amount = Long.parseLong(s[1]);
 						JFileChooser save = new JFileChooser();
-						save.showSaveDialog(this);
+						save.setSelectedFile(new File((String) li_fileList.getSelectedValue()));
+						
 						if(save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION)
 						{
 							//System.out.println(save.getSelectedFile().toString());
-							parentFile_amount = save.getSelectedFile().getFreeSpace();
-							if(File_amount <= parentFile_amount)
+							//System.out.println(parentFile_amount);
+							//parentFile_amount = save.getSelectedFile().getFreeSpace();
+							//if(File_amount <= parentFile_amount)
 							{
 								ftpconnect(file_str+"\\"+li_fileList.getSelectedValue()
 								+"|"+save.getSelectedFile().getAbsolutePath(), 12);
@@ -572,7 +568,10 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 							}	
 						}
 					}
-					System.out.println("파일이 없습니다.");
+					else
+					{
+						System.out.println("파일이 없습니다.");
+					}
 					break;
 				case Data.FILE_UP :
 					
@@ -590,6 +589,7 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 	public void mouseClicked(MouseEvent e) {
 		if(e.getClickCount()==2)
 		{
+			System.out.println("------------mouseClicked-----------");
 			if(li_fileList.getSelectedValue().equals(".."))
 			{
 				String parent = "";
@@ -610,26 +610,48 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 			}
 			else 
 			{
-				//File file = new File(file_access+"\\"+li_fileList.getSelectedValue());
-				System.out.println(file_str+"\\"+li_fileList.getSelectedValue());
-				File f [] = getFileList;
-				System.out.println(f[0]);
-				for(int i = 0 ; i < f.length ; i++)
+				//System.out.println(file_str+"\\"+li_fileList.getSelectedValue());
+				
+				for(Map.Entry<String, Boolean> f : HashMapFileList.entrySet())
 				{
-					if(f[i].getName().equals(li_fileList.getSelectedValue()))
+					if(f.getKey().equals(li_fileList.getSelectedValue()))
 					{
-						if(f[i].isDirectory())
+						if(f.getValue())
 						{
+							System.out.println("11111111");
 							data = new Data(id, file_str+"\\"+li_fileList.getSelectedValue(), null, Data.FILE_REQ);
 							System.out.println("click : " + data.getMessage());
 						}
 						else 
 						{
+							System.out.println("2222222222");
 							data = new Data(id, file_str+"\\"+li_fileList.getSelectedValue(), null, Data.FILE_DOWN);
 						}
 					}
 					
-				}	
+				}
+				/*for(int i = 0 ; i < f.length ; i++)
+				{
+					System.out.println("f[i].getName() : " + f[i].getAbsolutePath());
+					System.out.println("li_fileList.getSelectedValue() : " + li_fileList.getSelectedValue());
+					if(f[i].getName().equals(li_fileList.getSelectedValue()))
+					{
+						if(f[i].isDirectory())
+						{
+							System.out.println("11111111");
+							data = new Data(id, file_str+"\\"+li_fileList.getSelectedValue(), null, Data.FILE_REQ);
+							System.out.println("click : " + data.getMessage());
+						}
+						else 
+						{
+							System.out.println("2222222222");
+							System.out.println(f[i].getAbsolutePath()+"    " + f[i].isDirectory() + "      " +  f[i].isFile());
+							System.out.println("333333333");
+							data = new Data(id, file_str+"\\"+li_fileList.getSelectedValue(), null, Data.FILE_DOWN);
+						}
+					}
+					
+				}	*/
 				sendData(data);
 				
 				/*if(file.isDirectory())
@@ -644,41 +666,51 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 		
 	}
 	
-	public void getList(File [] ff, String str_file)
+	public void getList(HashMap<String, Boolean> maplist, String str_file)
 	{
 	
 		//String [] str = file.list();
 		//File [] f = file.listFiles();
+		System.out.println("---------getList------------");
 		
-		File [] f = ff;
+		
+		/*for(int i=0; i < f.length; i++)
+		{
+			System.out.println(f[i].getAbsolutePath()+"    "+ f[i].isDirectory()+"    ----");
+		}*/
+		
 		
 		ArrayList<String> af = new ArrayList<String>();
 		ArrayList<String> ad = new ArrayList<String>();
 		
-		for(int i = 0 ; i < f.length ; i++)
+		for(Map.Entry<String, Boolean> f : maplist.entrySet())
 		{
-			if(f[i].isDirectory())
+			if(f.getValue())
 			{
 				System.out.println("폴더");
-			}
-			else if(f[i].isFile())
-			{
-				System.out.println("파일");
+				ad.add(f.getKey());
 			}
 			else
 			{
 				System.out.println("기타");
-			}
+				af.add(f.getKey());
+			}	
+		}
+		/*for(int i = 0 ; i < f.length ; i++)
+		{
+			
 			
 			if(f[i].isDirectory())
 			{
+				System.out.println("폴더");
 				ad.add(f[i].getName());
 			}
 			else
 			{
+				System.out.println("기타");
 				af.add(f[i].getName());
 			}	
-		}
+		}*/
 		Collections.sort(af);
 		Collections.sort(ad);
 		

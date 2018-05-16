@@ -47,7 +47,10 @@ public class FtpClientThread extends JFrame implements Runnable{
 			try 
 			{
 				dos.writeInt(Data.FILE_DOWN);
-				s= SourceFielPath.split("|");
+				s= SourceFielPath.split("\\|");
+				System.out.println(s.length);
+				System.out.println(s[0]);
+				System.out.println(s[1]);
 				//s[0] = 파일 경로 s[1] = 저장하고 싶은 위치
 				dos.writeUTF(s[0]);
 				if(dis.readUTF().equals("Y"))
@@ -77,6 +80,8 @@ public class FtpClientThread extends JFrame implements Runnable{
 			int c = 0;
 			while( (c=dis.read(b)) != -1 )
 				bosFile.write(b, 0, c);
+			
+			bosFile.flush();
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -242,8 +247,8 @@ public class FtpClientThread extends JFrame implements Runnable{
 	*/
 	public void closeAll(){
 		System.out.println("모든 자원 종료");
-		try { if(fos != null) {fos.close(); }} catch (IOException e) {}
-		try { if(fis != null) {fis.close(); }} catch (IOException e) {}
+		try { if(bosFile != null) {bosFile.close(); }} catch (IOException e) {}
+		try { if(bisFile != null) {bisFile.close(); }} catch (IOException e) {}
 		try { if(dis != null) {dis.close();}} catch (IOException e) {}
 		try { if(dos != null) {dos.close(); }} catch (IOException e) {}
 	}
