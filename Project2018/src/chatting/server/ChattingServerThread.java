@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import java.util.Vector;
 import chatting.dao.ChattingDAO;
 import chatting.data.Data;
 import chatting.data.Log;
+import jdk.nashorn.internal.runtime.arrays.ArrayLikeIterator;
 
 public class ChattingServerThread implements Runnable {
 
@@ -55,7 +57,9 @@ public class ChattingServerThread implements Runnable {
 							list.add(id);
 						}
 						data.setUserList(list);
-						dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', "立加", date.format(new Date()), time.format(new Date())));
+						System.out.println("fefefe");
+//						dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', "立加", date.format(new Date()), time.format(new Date())));
+						System.out.println("grgrgrg");
 						broadCasting();
 						break;
 						
@@ -82,6 +86,10 @@ public class ChattingServerThread implements Runnable {
 					
 					case Data.Log_ALL:
 						data.setLog(dao.listLogs());
+						ArrayList<Log> l = dao.listLogs();
+						for( Log d : l ) {
+							System.out.println(d);
+						}
 						broadCasting();
 						
 					case Data.FILE_UP:
