@@ -23,11 +23,6 @@ public class Log implements Serializable{
 	private String grantList[] = {"ACC","UP","DN","NEW", "DEL"};
 	private String actionList[] = {"해제","접속","생성","삭제", "업로드", "다운로드"};
 	
-	
-	
-
-
-
 	@Override
 	public String toString() 
 	{
