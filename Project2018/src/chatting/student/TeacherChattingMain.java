@@ -40,6 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
@@ -47,6 +48,10 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableRowSorter;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import chatting.data.Data;
@@ -116,9 +121,10 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 	DefaultMutableTreeNode node;
 	public static JProgressBar progressbar;
 	public static JLabel lbl_per;
-	private String SEVER_IP = "127.0.0.1";
+	//private String SEVER_IP = "127.0.0.1";
 //	private String SEVER_IP = "203.233.196.50";
 //	private String SEVER_IP = "203.233.196.48";
+	private String SEVER_IP = "203.233.196.40";
 	
 	private FtpClientThread cst;
 	private JButton btn_cancel;
@@ -134,8 +140,11 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 	private JButton b_filelist;
 	private String file_access;
 	private String file_str;
-
-
+	private String contents [][];
+	private String header[];
+	private DefaultTableModel model;
+	private JScrollPane scrollPane_3;
+	private JTable table;
 	/**
 	 * Launch the application.
 	 */
@@ -278,18 +287,24 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 		panel_5.add(b_serch);
 		
 		scrollPane_2 = new JScrollPane();
-		scrollPane_2.setSize(new Dimension(350, 180));
+		scrollPane_2.setSize(new Dimension(200, 180));
 		scrollPane_2.setPreferredSize(new Dimension(11, 2));
 		scrollPane_2.setAutoscrolls(true);
 		scrollPane_2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane_2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		panel_2.add(scrollPane_2, BorderLayout.CENTER);
+		panel_2.add(scrollPane_2, BorderLayout.EAST);
 		list = new JList<String>();
 
 		
 		
 		list.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		scrollPane_2.setViewportView(list);
+		table = new JTable();
+		table.setAutoCreateRowSorter(true);
+		TableRowSorter tablesorter = new TableRowSorter(table.getModel());
+		table.setRowSorter(tablesorter);
+		scrollPane_3 = new JScrollPane(table);
+		panel_2.add(scrollPane_3, BorderLayout.CENTER);
 		setVisible(true);
 		connectServer();
 	
@@ -741,7 +756,7 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 		Socket ftpclient;
 		
 		try {
-			ftpclient = new Socket(SEVER_IP, 8888);
+			ftpclient = new Socket(SEVER_IP, 7778);
 			dos = new DataOutputStream(ftpclient.getOutputStream());
 			dis = new DataInputStream(ftpclient.getInputStream());
 			FtpClientThread cst = new FtpClientThread(dis, dos, mode, path);

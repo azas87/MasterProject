@@ -111,6 +111,8 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 	private String file_access;
 	private String file_str;
 	private JButton b_filelist;
+	private String fileServer_port;
+	private File getFileList [];
 
 	
 	/**
@@ -547,6 +549,12 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 					data = new Data(id, file_access, null, Data.FILE_REQ);
 					sendData(data);
 					break;
+				case Data.FILE_DOWN :
+					if(data.getMessage().equals("Y"))
+					{
+						fileServer_port = data.getTargetId();	
+					}
+					break;
 				}
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
@@ -583,7 +591,23 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 			{
 				//File file = new File(file_access+"\\"+li_fileList.getSelectedValue());
 				System.out.println(file_str+"\\"+li_fileList.getSelectedValue());
-				data = new Data(id, file_str+"\\"+li_fileList.getSelectedValue(), null, Data.FILE_REQ);
+				File f [] = getFileList;
+				System.out.println(f[0]);
+				for(int i = 0 ; i < f.length ; i++)
+				{
+					if(f[i].getName().equals(li_fileList.getSelectedValue()))
+					{
+						if(f[i].isFile())
+						{
+							data = new Data(id, file_str+"\\"+li_fileList.getSelectedValue(), null, Data.FILE_DOWN);
+						}
+						else
+						{
+							data = new Data(id, file_str+"\\"+li_fileList.getSelectedValue(), null, Data.FILE_REQ);
+						}
+					}
+					
+				}	
 				sendData(data);
 				
 				/*if(file.isDirectory())
