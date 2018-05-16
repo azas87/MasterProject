@@ -851,17 +851,17 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 										list.setModel(logContent);
 										break;
 					case Data.FILE_ACCEPT : 
-											file_str = data.getMessage();
-											getFileList = data.getFile();
-											getList(getFileList, file_str);
-											System.out.println("file_accept " + data.getMessage());
-											break;
+										file_str = data.getMessage();
+										getFileList = data.getFile();
+										getList(getFileList, file_str);
+										System.out.println("file_accept " + data.getMessage());
+										break;
 					case Data.FILE_ACCESS : 
-											file_access = data.getMessage();
-											System.out.println("file_acccess " + data.getMessage());
-											data = new Data(id, file_access, null, Data.FILE_REQ);
-											sendData(data);
-											break;
+										file_access = data.getMessage();
+										System.out.println("file_acccess " + data.getMessage());
+										data = new Data(id, file_access, null, Data.FILE_REQ);
+										sendData(data);
+										break;
 					case Data.FILE_DOWN :
 												
 											break;

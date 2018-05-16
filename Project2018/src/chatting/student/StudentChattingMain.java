@@ -113,6 +113,7 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 	private JButton b_filelist;
 	private String fileServer_port;
 	private File getFileList [];
+	private	long parentFile_amount;
 
 	
 	/**
@@ -124,7 +125,7 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 	 * Create the frame.
 	 */
 	public StudentChattingMain(String id) {
-
+		
 		this.id = id;
 		setTitle("SCIT(\uD559\uC0DD)");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -300,7 +301,9 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 			
 			if(save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION)
 			{
-				System.out.println(save.getSelectedFile().toString());
+				//System.out.println(save.getSelectedFile().toString());
+				ftpconnect(data.getMessage(), 12);
+				parentFile_amount = save.getSelectedFile().getParent().length();
 			}
 			File file = save.getSelectedFile();
 		}
@@ -539,8 +542,9 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 					ta_chatOutput.append("[" + data.getId() + "](±Ó¸»)" + data.getMessage() + "\n");
 					break;
 				case Data.FILE_ACCEPT : 
-					getList(data.getFile(), data.getMessage());
 					file_str = data.getMessage();
+					getFileList = data.getFile();
+					getList(getFileList, file_str);
 					System.out.println("file_accept " + data.getMessage());
 					break;
 				case Data.FILE_ACCESS : 
@@ -552,8 +556,9 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 				case Data.FILE_DOWN :
 					if(data.getMessage().equals("Y"))
 					{
-						fileServer_port = data.getTargetId();	
+						fileServer_port = data.getTargetId();
 					}
+					
 					break;
 				}
 			} catch (ClassNotFoundException e) {
@@ -600,10 +605,12 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 						if(f[i].isFile())
 						{
 							data = new Data(id, file_str+"\\"+li_fileList.getSelectedValue(), null, Data.FILE_DOWN);
+							System.out.println(data.getMessage());
 						}
 						else
 						{
 							data = new Data(id, file_str+"\\"+li_fileList.getSelectedValue(), null, Data.FILE_REQ);
+							System.out.println(data.getMessage());
 						}
 					}
 					
