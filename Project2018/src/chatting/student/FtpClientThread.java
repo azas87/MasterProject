@@ -1,6 +1,5 @@
 package chatting.student;
 
-import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -8,8 +7,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+
+import chatting.data.Data;
 
 
 
@@ -26,6 +26,9 @@ public class FtpClientThread extends JFrame implements Runnable{
 	private String msg;
 	public static boolean isCancel;
 	private File file;
+	private Data data;
+	private Long file_long;
+	private StudentChattingMain scm;
 	
 	public FtpClientThread(DataInputStream dis, DataOutputStream dos, int mode, String SourceFielPath) {
 		this.dis = dis;
@@ -34,7 +37,33 @@ public class FtpClientThread extends JFrame implements Runnable{
 		this.SourceFielPath = SourceFielPath;
 	}
 	
-	@Override
+	public void run()
+	{
+		if(mode==Data.FILE_DOWN)
+		{	
+			try 
+			{
+				dos.writeInt(Data.FILE_DOWN);
+				dos.writeUTF(SourceFielPath);
+				if(dis.readUTF().equals("Y"))
+				{
+						
+					//검사해서 y/n보내고 파일읽기
+					
+				}	
+				
+				
+			}
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+		
+		
+	}
+
+/*	@Override
 	public void run() {
 		try 
 		{
@@ -59,8 +88,8 @@ public class FtpClientThread extends JFrame implements Runnable{
 					// 원래는 selectfile이 null 나오겠지만.. 내가 파일명 때문에 setSelectedFile 해서 구별이 안 됨
 					if(save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION )
 					{
-						/*File selectFile = save.getSelectedFile();
-						file = new File(selectFile.getAbsolutePath());*/
+						File selectFile = save.getSelectedFile();
+						file = new File(selectFile.getAbsolutePath());
 
 						file = save.getSelectedFile();
 						
@@ -166,7 +195,7 @@ public class FtpClientThread extends JFrame implements Runnable{
 		}
 		System.out.println("ftpclient 스레드 종료");
 	}
-	
+	*/
 	public void closeAll(){
 		System.out.println("모든 자원 종료");
 		try { if(fos != null) {fos.close(); }} catch (IOException e) {}
