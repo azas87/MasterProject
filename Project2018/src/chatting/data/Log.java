@@ -23,6 +23,16 @@ public class Log implements Serializable{
 	private String grantList[] = {"立加","诀","促款","积己", "昏力"};
 	private String actionList[] = {"秦力","立加","积己","昏力", "诀肺靛", "促款肺靛"};
 	
+	public Log(int action, int stdNo, int logNo, char result, String logs, String dates, String time) {
+		this.action = action;
+		this.stdNo = stdNo;
+		this.logNo = logNo;
+		this.result = result;
+		this.logs = logs;
+		this.dates = dates;
+		this.time = time;
+	}
+	
 	@Override
 	public String toString() 
 	{
