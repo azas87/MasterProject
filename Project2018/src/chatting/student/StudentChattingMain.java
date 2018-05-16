@@ -111,10 +111,10 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 	private String file_access;
 	private String file_str;
 	private JButton b_filelist;
-	private String fileServer_port;
+	private int fileServer_port;
 	private File getFileList [];
 	private	long parentFile_amount;
-
+	private long File_amount;
 	
 	/**
 	private FtpClientThread cst;
@@ -298,16 +298,9 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 		}	
 		else if(source == b_download)
 		{
-			JFileChooser save = new JFileChooser();
-			save.showSaveDialog(this);
-			
-			if(save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION)
-			{
-				//System.out.println(save.getSelectedFile().toString());
-				ftpconnect(data.getMessage(), 12);
-				parentFile_amount = save.getSelectedFile().getParent().length();
-			}
-			File file = save.getSelectedFile();
+			String s = file_str + "\\" + li_fileList.getSelectedValue();
+			System.out.println("b_download : " + s);
+			data = new Data(id, s, null, Data.FILE_DOWN);
 		}
 		
 		/*
@@ -556,10 +549,30 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 					sendData(data);
 					break;
 				case Data.FILE_DOWN :
-					if(data.getMessage().equals("Y"))
+					System.out.println("FILE_DOWN : " + data.getMessage());
+					String s [] = data.getMessage().split("|");
+					//s[0] : y/n검사  s[1] : 용량
+					
+					if(s[0].equals("Y"))
 					{
-						fileServer_port = data.getTargetId();
+						fileServer_port = Integer.parseInt(data.getTargetId());						
+						File_amount = Long.parseLong(s[1]);
+						JFileChooser save = new JFileChooser();
+						save.showSaveDialog(this);
+						if(save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION)
+						{
+							//System.out.println(save.getSelectedFile().toString());
+							parentFile_amount = save.getSelectedFile().getFreeSpace();
+							if(File_amount <= parentFile_amount)
+							{
+								ftpconnect(file_str+"\\"+li_fileList.getSelectedValue()
+								+"|"+save.getSelectedFile().getAbsolutePath(), 12);
+								System.out.println("FILE_DOWN : "+file_str+"\\"+li_fileList.getSelectedValue());
+								System.out.println("FILE_DOWN : " + save.getSelectedFile().getAbsolutePath());
+							}	
+						}
 					}
+					System.out.println("파일이 없습니다.");
 					break;
 				case Data.FILE_UP :
 					
@@ -605,15 +618,14 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 				{
 					if(f[i].getName().equals(li_fileList.getSelectedValue()))
 					{
-						if(f[i].isFile())
-						{
-							data = new Data(id, file_str+"\\"+li_fileList.getSelectedValue(), null, Data.FILE_DOWN);
-							System.out.println(data.getMessage());
-						}
-						else
+						if(f[i].isDirectory())
 						{
 							data = new Data(id, file_str+"\\"+li_fileList.getSelectedValue(), null, Data.FILE_REQ);
-							System.out.println(data.getMessage());
+							System.out.println("click : " + data.getMessage());
+						}
+						else 
+						{
+							data = new Data(id, file_str+"\\"+li_fileList.getSelectedValue(), null, Data.FILE_DOWN);
 						}
 					}
 					
@@ -628,6 +640,7 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 			}
 			//getList();
 		}
+		
 		
 	}
 	
@@ -710,8 +723,6 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 	@Override
 	public void mouseExited(MouseEvent e) 
 	{
-	
-		
 	}
 	
 	public void ftpconnect(String path, int mode)
@@ -719,7 +730,7 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 		Socket ftpclient;
 		
 		try {
-			ftpclient = new Socket(SEVER_IP, 8888);
+			ftpclient = new Socket(SEVER_IP, fileServer_port);
 			dos = new DataOutputStream(ftpclient.getOutputStream());
 			dis = new DataInputStream(ftpclient.getInputStream());
 			FtpClientThread cst = new FtpClientThread(dis, dos, mode, path);

@@ -1,9 +1,12 @@
 package chatting.student;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -19,7 +22,8 @@ public class FtpClientThread extends JFrame implements Runnable{
 	private DataOutputStream dos;
 	private FileInputStream fis;
 	private FileOutputStream fos;
-	
+	private BufferedInputStream bisFile;
+	private BufferedOutputStream bosFile;
 	private String uufName;
 	private String SourceFielPath;
 	private int mode;
@@ -27,8 +31,7 @@ public class FtpClientThread extends JFrame implements Runnable{
 	public static boolean isCancel;
 	private File file;
 	private Data data;
-	private Long file_long;
-	private StudentChattingMain scm;
+	private String s [];	
 	
 	public FtpClientThread(DataInputStream dis, DataOutputStream dos, int mode, String SourceFielPath) {
 		this.dis = dis;
@@ -44,25 +47,66 @@ public class FtpClientThread extends JFrame implements Runnable{
 			try 
 			{
 				dos.writeInt(Data.FILE_DOWN);
-				dos.writeUTF(SourceFielPath);
+				s= SourceFielPath.split("|");
+				//s[0] = 파일 경로 s[1] = 저장하고 싶은 위치
+				dos.writeUTF(s[0]);
 				if(dis.readUTF().equals("Y"))
 				{
-						
-					//검사해서 y/n보내고 파일읽기
-					
+					//프로그레스바 만들기
+					fileDown();
 				}	
-				
-				
 			}
 			catch (IOException e) 
 			{
 				e.printStackTrace();
 			}
 		}
-		
+		else
+		{
+			
+		}	
+	}
+	
+	public void fileDown() 
+	{
+		try 
+		{
+			bosFile = new BufferedOutputStream(new FileOutputStream(s[1]));
+			
+			byte[] b = new byte[4096];
+			int c = 0;
+			while( (c=dis.read(b)) != -1 )
+				bosFile.write(b, 0, c);
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			closeAll();
+		}
 		
 	}
-
+	
+	public void fileUp() {
+		try {
+			bisFile = new BufferedInputStream(new FileInputStream(file));
+			
+			byte[] b = new byte[4096];
+			int c = 0;
+			while( (c=bisFile.read(b)) != -1 )
+				dos.write(b, 0, c);
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			closeAll();
+		}
+		
+	}
+	
 /*	@Override
 	public void run() {
 		try 
