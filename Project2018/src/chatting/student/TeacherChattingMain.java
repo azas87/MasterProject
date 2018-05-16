@@ -145,6 +145,7 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 	private DefaultTableModel model;
 	private JScrollPane scrollPane_3;
 	private JTable table;
+	private File getFileList [];
 	/**
 	 * Launch the application.
 	 */
@@ -612,17 +613,23 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 	
 	
 
-	public void mouseClicked(MouseEvent e) 
-	{
+	@Override
+	public void mouseClicked(MouseEvent e) {
 		if(e.getClickCount()==2)
 		{
 			if(file_list.getSelectedValue().equals(".."))
 			{
 				String parent = "";
 				String [] path = file_str.split("\\\\"); //***파일에서 \\는 찾을 때 \를 기호로 인식하므로 \"처럼 \\\\써야함 
-				for(int i = 0 ; i < path.length-1 ; i++)
+				/*for(int i = 0 ; i < path.length-1 ; i++)
 				{
 					 parent += path[i] + "\\";
+				}
+				file_str = parent;*/
+				parent = path[0];
+				for(int i = 1 ; i < path.length-1 ; i++)
+				{
+					 parent += ("\\" + path[i]);
 				}
 				file_str = parent;
 				data = new Data(id, file_str, null, Data.FILE_REQ);
@@ -631,8 +638,24 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 			else 
 			{
 				//File file = new File(file_access+"\\"+li_fileList.getSelectedValue());
-				//System.out.println(file_str+li_fileList.getSelectedValue());
-				data = new Data(id, file_str+file_list.getSelectedValue(), null, Data.FILE_REQ);
+				System.out.println(file_str+"\\"+file_list.getSelectedValue());
+				File f [] = getFileList;
+				System.out.println(f[0]);
+				for(int i = 0 ; i < f.length ; i++)
+				{
+					if(f[i].getName().equals(file_list.getSelectedValue()))
+					{
+						if(f[i].isFile())
+						{
+							data = new Data(id, file_str+"\\"+file_list.getSelectedValue(), null, Data.FILE_DOWN);
+						}
+						else
+						{
+							data = new Data(id, file_str+"\\"+file_list.getSelectedValue(), null, Data.FILE_REQ);
+						}
+					}
+					
+				}	
 				sendData(data);
 				
 				/*if(file.isDirectory())
@@ -643,7 +666,7 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 			}
 			//getList();
 		}
-
+		
 	}
 	
 	public void fileName(File f, int count)
@@ -828,16 +851,22 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 										list.setModel(logContent);
 										break;
 					case Data.FILE_ACCEPT : 
-						getList(data.getFile(), data.getMessage());
-						file_str = data.getMessage();
-						System.out.println("file_accept " + data.getMessage());
-						break;
+											file_str = data.getMessage();
+											getFileList = data.getFile();
+											getList(getFileList, file_str);
+											System.out.println("file_accept " + data.getMessage());
+											break;
 					case Data.FILE_ACCESS : 
-						file_access = data.getMessage();
-						System.out.println("file_acccess " + data.getMessage());
-						data = new Data(id, file_access, null, Data.FILE_REQ);
-						sendData(data);
-						break;
+											file_access = data.getMessage();
+											System.out.println("file_acccess " + data.getMessage());
+											data = new Data(id, file_access, null, Data.FILE_REQ);
+											sendData(data);
+											break;
+					case Data.FILE_DOWN :
+												
+											break;
+					case Data.FILE_UP : 	
+								break;			
 										
 				}	
 			} 
