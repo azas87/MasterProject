@@ -105,7 +105,6 @@ public class ChattingServerThread implements Runnable {
 					case Data.FILE_REQ:
 						path = new File(data.getMessage());
 						data.setStatus(Data.FILE_ACCEPT);
-						System.out.println("1111");
 						data.setFile(path.listFiles());
 						broadCasting();
 						//targetId = data.getId();
@@ -115,6 +114,20 @@ public class ChattingServerThread implements Runnable {
 					case Data.FILE_CREATE:
 						path = new File(data.getMessage());
 						path.mkdir();
+						getParent();
+						broadCasting();
+						break;
+						
+					case Data.FILE_DELETE:
+						path = new File(data.getMessage());
+						if( path.isDirectory() ) {
+							deleteDir(path);
+						}
+						path.delete();
+						getParent();
+						broadCasting();
+						break;
+						
 				}
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
@@ -138,6 +151,27 @@ public class ChattingServerThread implements Runnable {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void deleteDir(File dir) {
+		File[] rmFiles = dir.listFiles();
+		
+		for(int i=0; i<rmFiles.length; i++)
+		{
+			if( rmFiles[i].isDirectory() ) {
+				deleteDir(dir);
+				rmFiles[i].delete();
+			}
+			else
+				rmFiles[i].delete();
+		}
+	}
+	
+	public void getParent() {
+		File parent = path.getParentFile();
+		
+		data.setFile(parent.listFiles());
+		data.setStatus(Data.FILE_ACCEPT);
 	}
 
 	
