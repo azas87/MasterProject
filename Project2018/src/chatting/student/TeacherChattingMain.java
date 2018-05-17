@@ -26,6 +26,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.swing.BoxLayout;
@@ -145,7 +147,7 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 	private DefaultTableModel model;
 	private JScrollPane scrollPane_3;
 	private JTable table;
-	private File getFileList [];
+	private HashMap<String, Boolean> HashMapFileList;
 
 	public TeacherChattingMain(String id) {
 		
@@ -452,6 +454,26 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 			}
 			else 
 			{
+				for(Map.Entry<String, Boolean> f : HashMapFileList.entrySet())
+				{
+					if(f.getKey().equals(file_list.getSelectedValue()))
+					{
+						if(f.getValue())
+						{
+							System.out.println("11111111");
+							data = new Data(id, file_str+"\\"+file_list.getSelectedValue(), null, Data.FILE_REQ);
+							System.out.println("click : " + data.getMessage());
+						}
+						else 
+						{
+							System.out.println("2222222222");
+							data = new Data(id, file_str+"\\"+file_list.getSelectedValue(), null, Data.FILE_DOWN);
+						}
+					}
+					
+				}
+			
+				/*
 				System.out.println(file_str+"\\"+file_list.getSelectedValue());
 				File f [] = getFileList;
 				System.out.println(f[0]);
@@ -469,7 +491,7 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 						}
 					}
 					
-				}	
+				}*/
 				sendData(data);
 			}
 		}
@@ -511,15 +533,29 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 	}
 	
 	
-	public void getList(File [] ff, String str_file)
+	public void getList(HashMap<String, Boolean> maplist, String str_file)
 	{
 	
-		File [] f = ff;
+		//File [] f = ff;
 		
 		ArrayList<String> af = new ArrayList<String>();
 		ArrayList<String> ad = new ArrayList<String>();
 		
-		for(int i = 0 ; i < f.length ; i++)
+		for(Map.Entry<String, Boolean> f : maplist.entrySet())
+		{
+			if(f.getValue())
+			{
+				System.out.println("폴더");
+				ad.add(f.getKey());
+			}
+			else
+			{
+				System.out.println("기타");
+				af.add(f.getKey());
+			}	
+		}
+		
+		/*for(int i = 0 ; i < f.length ; i++)
 		{
 			if(f[i].isFile())
 			{
@@ -529,7 +565,7 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 			{
 				ad.add(f[i].getName());
 			}	
-		}
+		}*/
 		Collections.sort(af);
 		Collections.sort(ad);
 		
@@ -668,8 +704,8 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 						break;
 					case Data.FILE_ACCEPT : 
 						file_str = data.getMessage();
-						getFileList = data.getFile();
-						getList(getFileList, file_str);
+						HashMapFileList = data.getFileList();
+						getList(HashMapFileList, file_str);
 						System.out.println("file_accept " + data.getMessage());
 						break;
 					case Data.FILE_ACCESS : 
