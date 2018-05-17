@@ -31,7 +31,9 @@ public class FtpClientThread extends JFrame implements Runnable{
 	public static boolean isCancel;
 	private File file;
 	private Data data;
-	private String s [];	
+	private String s [];
+	public static long totalSize; 
+	public long fileSize;
 	
 	public FtpClientThread(DataInputStream dis, DataOutputStream dos, int mode, String SourceFielPath) {
 		this.dis = dis;
@@ -56,6 +58,9 @@ public class FtpClientThread extends JFrame implements Runnable{
 				if(dis.readUTF().equals("Y"))
 				{
 					//프로그레스바 만들기
+					Thread t = new Thread(new TransferProgress(fileSize));
+					t.start();
+					
 					fileDown();
 				}	
 			}
@@ -102,6 +107,7 @@ public class FtpClientThread extends JFrame implements Runnable{
 			while( (c=bisFile.read(b)) != -1 )
 				dos.write(b, 0, c);
 			
+			dos.flush();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
