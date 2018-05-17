@@ -30,7 +30,7 @@ public class ChattingServerThread implements Runnable {
 	private SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
 	private String clientIp;
 	
-	public ChattingServerThread(ObjectInputStream ois, ObjectOutputStream oos, int port, String ClientIp) {
+	public ChattingServerThread(ObjectInputStream ois, ObjectOutputStream oos, int port, String clientIp) {
 		this.ois = ois;
 		this.oos = oos;
 		this.port = port;
@@ -61,7 +61,9 @@ public class ChattingServerThread implements Runnable {
 //						System.out.println("fefefe");
 						//dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', "立加", date.format(new Date()), time.format(new Date())));
 //						System.out.println("grgrgrg");
-						insertLog("立加 "+ clientIp);
+						System.out.println(clientIp);
+						insertLog("立加");
+						
 						broadCasting();
 						break;
 						
@@ -103,6 +105,7 @@ public class ChattingServerThread implements Runnable {
 						break;
 						
 					case Data.FILE_DOWN:
+						insertLog(fileNameSplit());
 						path = new File(data.getMessage());
 						if( path.exists() )
 						{
@@ -125,11 +128,6 @@ public class ChattingServerThread implements Runnable {
 					case Data.FILE_REQ:
 						data.setStatus(Data.FILE_ACCEPT);
 						data.setFileList(makeFileList(data.getMessage()));
-						File test[] = path.listFiles();
-						for(int i = 0; i < test.length; i++ )
-						{
-							System.out.println(test[i].getName()+"    "+test[i].isDirectory());
-						}
 						broadCasting();
 						//targetId = data.getId();
 						//userList.get(targetId).writeObject(data);
@@ -213,12 +211,30 @@ public class ChattingServerThread implements Runnable {
 	}
 	
 	public String fileNameSplit() {
-		String[] str = data.getMessage().split("IT_Master");
+		System.out.println("fileNameSplit : " + data.getMessage());
+		String[] strs = data.getMessage().split("IT_Master");
+		System.out.println(strs.length);
+		for(int i = 0; i < strs.length; i++)
+		{
+			System.out.println(strs[i]);			
+		}
 		
-		return str[1];
+		/*
+		String str = "D:\\IT_Master\\A馆";
+		String[] strs = str.split("IT_Master");
+		System.out.println(strs.length);
+		for(int i = 0; i < strs.length; i++)
+		{
+			System.out.println(strs[i]);			
+		}*/
+		
+		
+		return strs[1];
+				
 	}
 	
 	public void insertLog(String result) {
-		dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', result, "18/05/17", "18/05/17"));
+//		dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()).getStdNo(), dao.logCount()+1, 'o', result, clientIp, "18/05/17", "18/05/17"));
+		dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()).getStdNo(), dao.logCount()+1, 'O', result, clientIp, "18/05/17", "18/05/17"));
 	}
 }
