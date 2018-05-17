@@ -57,6 +57,9 @@ public class FtpClientThread extends JFrame implements Runnable{
 				{
 					
 					//프로그레스바 만들기
+					Thread t = new Thread(new TransferProgress(fileSize));
+					t.start();
+					
 					fileDown();
 				}	
 			}
@@ -123,6 +126,7 @@ public class FtpClientThread extends JFrame implements Runnable{
 			while( (c=bisFile.read(b)) != -1 )
 				dos.write(b, 0, c);
 			
+			dos.flush();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
