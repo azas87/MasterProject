@@ -19,7 +19,7 @@ public class ChattingDAO {
 		try {
 			session = factory.openSession();
 			ChattingMapper mapper = session.getMapper(ChattingMapper.class);
-//			cnt = mapper.insertLog(l);	
+			cnt = mapper.insertLog(l);	
 			session.commit();
 		}
 		catch (Exception e)
@@ -89,9 +89,9 @@ public class ChattingDAO {
 		return result;
 	}
 	
-	public int getStdNo(String name) {
+	public Log getStdNo(String name) {
 		SqlSession session = null;
-		int result = 0;
+		Log result = null;
 		
 		try {
 			session = factory.openSession();
@@ -123,17 +123,17 @@ public class ChattingDAO {
 		return result;
 	}
 	
-	
-	
-	public static void main(String[] args) {
-		System.out.println("실행");
-		ChattingDAO dao = new ChattingDAO();
-		
-		
-		for(Log l : dao.listLogs())
-		{
-			System.out.println(l);
-		}
-		
-	}
+//	
+//	
+//	public static void main(String[] args) {
+//		System.out.println("실행");
+//		ChattingDAO dao = new ChattingDAO();
+//		
+//		
+//		for(Log l : dao.listLogs())
+//		{
+//			System.out.println(l);
+//		}
+//		
+//	}
 }

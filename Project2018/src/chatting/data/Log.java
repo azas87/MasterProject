@@ -13,7 +13,7 @@ public class Log implements Serializable{
 	private char admin;
 	private int grants;
 	private int action;
-	private int stdNo;
+	private String stdNo;
 	private int logNo;
 	private char result;
 	private String logs;
@@ -23,7 +23,8 @@ public class Log implements Serializable{
 	private String grantList[] = {"立加","诀","促款","积己", "昏力"};
 	private String actionList[] = {"秦力","立加","积己","昏力", "诀肺靛", "促款肺靛"};
 	
-	public Log(int action, int stdNo, int logNo, char result, String logs, String dates, String time) {
+	public Log() {}
+	public Log(int action, String stdNo, int logNo, char result, String logs, String dates, String time) {
 		this.action = action;
 		this.stdNo = stdNo;
 		this.logNo = logNo;
@@ -126,10 +127,10 @@ public class Log implements Serializable{
 	public void setAction(int action) {
 		this.action = action;
 	}
-	public int getStdNo() {
+	public String getStdNo() {
 		return stdNo;
 	}
-	public void setStdNo(int stdNo) {
+	public void setStdNo(String stdNo) {
 		this.stdNo = stdNo;
 	}
 	public int getLogNo() {
