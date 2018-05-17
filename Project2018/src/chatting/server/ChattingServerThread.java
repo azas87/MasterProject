@@ -7,16 +7,13 @@ import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
 import chatting.dao.ChattingDAO;
 import chatting.data.Data;
 import chatting.data.Log;
-import jdk.nashorn.internal.runtime.arrays.ArrayLikeIterator;
 
 public class ChattingServerThread implements Runnable {
 

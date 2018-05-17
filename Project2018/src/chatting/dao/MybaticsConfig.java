@@ -5,8 +5,6 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
-import chatting.data.Log;
-
 public class MybaticsConfig {
 	private static SqlSessionFactory sqlSessionFactory;
 	

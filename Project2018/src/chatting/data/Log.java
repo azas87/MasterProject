@@ -1,11 +1,6 @@
 package chatting.data;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Scanner;
 
 public class Log implements Serializable{
 	private String name;
