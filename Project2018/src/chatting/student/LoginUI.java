@@ -95,7 +95,7 @@ class Myframe10 extends JFrame implements ActionListener
 			portNum = j5.getText();
 			System.out.println(portNum);
 			new StudentChattingMain(name, ipAddress, portNum);
-			//new TeacherChattingMain(name, ipAddress, portNum);
+//			new TeacherChattingMain(name, ipAddress, portNum);
 		}
 		else if(source==b2)
 		{	

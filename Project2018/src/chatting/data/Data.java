@@ -23,16 +23,16 @@ public class Data implements Serializable
 	public static final int CHAT_MESSAGE = 2; //일반 대화
 	public static final int CHAT_WHISPER = 3; //귓말 대화
 	public static final int CHAT_LOGOUT = 4;  //로그아웃
-	public static final int CHAT_TREE = 5;		// 로그아웃
-	public static final int FILE_DELETE = 6;		// 로그아웃
-	public static final int FILE_CREATE = 7;		// 로그아웃
-	public static final int Log_ALL = 8;
-	public static final int FILE_REQ = 9; //파일요청
-	public static final int FILE_ACCEPT = 10; //파일받기
-	public static final int FILE_ACCESS = 11; //파일시작-처음파일경로를 받기위해
-	public static final int FILE_DOWN = 12;
-	public static final int FILE_UP=13;
-	public static final int Log_Search = 14;
+//	public static final int CHAT_TREE = 5;		// 로그아웃
+	public static final int FILE_DELETE = 5;		// 로그아웃
+	public static final int FILE_CREATE = 6;		// 로그아웃
+	public static final int Log_ALL = 7;
+	public static final int FILE_REQ = 8; //파일요청
+	public static final int FILE_ACCEPT = 9; //파일받기
+	public static final int FILE_ACCESS = 10; //파일시작-처음파일경로를 받기위해
+	public static final int FILE_DOWN = 11;
+	public static final int FILE_UP=12;
+	public static final int Log_Search = 13;
 	
 	public Data(String id, String message, String targetId, int status) 
 	{
