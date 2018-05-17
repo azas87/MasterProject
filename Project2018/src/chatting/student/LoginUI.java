@@ -39,12 +39,15 @@ class Myframe10 extends JFrame implements ActionListener
 		
 		
 		JPanel p2 = new JPanel(new FlowLayout());
-		JLabel l2 = new JLabel("이름");
-		l2.setPreferredSize(new Dimension(50, 20)); // 정렬해주는 메서드
-		j2 = new JTextField(5);
+		JLabel l2 = new JLabel("IP");
+		l2.setPreferredSize(new Dimension(20, 20)); // 정렬해주는 메서드
+		j2 = new JTextField(10);
+		j2.setText("203.233.196.40");
+		j2.setEditable(true);
 		JLabel l4 = new JLabel("포트");
 		l4.setPreferredSize(new Dimension(30, 20));
 		j5 = new JTextField(5);
+		j5.setText("7777");
 		j5.setEditable(true);
 
 		p2.add(l2);
@@ -53,10 +56,9 @@ class Myframe10 extends JFrame implements ActionListener
 		p2.add(j5);
 
 		JPanel p3 = new JPanel();
-		JLabel l3 = new JLabel("IP주소");
-		l3.setPreferredSize(new Dimension(60, 20));
-		j4 = new JTextField(15);
-		j4.setText("203.233.196.40");
+		JLabel l3 = new JLabel("이름");
+		l3.setPreferredSize(new Dimension(30, 20));
+		j4 = new JTextField(6);
 		j4.setEditable(true);
 		p3.add(l3);
 		p3.add(j4);
@@ -87,9 +89,9 @@ class Myframe10 extends JFrame implements ActionListener
 		
 		if(source==b1)
 		{
-			String name = j2.getText();
+			String name = j4.getText();
 			this.dispose(); //화면에서 사라짐과 동시에 객체를 소멸시키는 메서드
-			ipAddress = j4.getText();
+			ipAddress = j2.getText();
 			portNum = j5.getText();
 			System.out.println(portNum);
 			new StudentChattingMain(name, ipAddress, portNum);

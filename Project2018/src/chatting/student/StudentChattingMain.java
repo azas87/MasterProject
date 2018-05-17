@@ -103,6 +103,8 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 	private String sendFile_path;
 	private String sendFile_amount;
 	private int serverPort;
+	private JScrollPane sp_personlist;
+	private JList list_person;
 	
 	/**
 	 * private FtpClientThread cst; Launch the application.
@@ -119,15 +121,17 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 
 		setTitle("SCIT(\uD559\uC0DD)");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 533, 340);
+		setBounds(100, 100, 689, 431);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 
 		sp_chatOutput = new JScrollPane();
+		sp_chatOutput.setPreferredSize(new Dimension(220, 2));
+		sp_chatOutput.setSize(new Dimension(130, 0));
 		sp_chatOutput.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		contentPane.add(sp_chatOutput, BorderLayout.CENTER);
+		contentPane.add(sp_chatOutput, BorderLayout.WEST);
 
 		ta_chatOutput = new JTextArea();
 		ta_chatOutput.setEditable(false);
@@ -149,6 +153,7 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 		p_south.add(btn_send, BorderLayout.EAST);
 
 		p_east = new JPanel();
+		p_east.setPreferredSize(new Dimension(220, 10));
 		contentPane.add(p_east, BorderLayout.EAST);
 		p_east.setLayout(new BorderLayout(0, 0));
 
@@ -178,7 +183,7 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 		b_download.addActionListener(this);
 		panel.add(b_download, BorderLayout.EAST);
 
-		b_filelist = new JButton("\uD30C\uC77C\uBAA9\uB85D");
+		b_filelist = new JButton("\uBAA9\uB85D");
 		b_filelist.addActionListener(this);
 		panel.add(b_filelist, BorderLayout.WEST);
 
@@ -192,10 +197,17 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 		li_fileList.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		li_fileList.addMouseListener(this);
 		sp_userList.setViewportView(li_fileList);
-
+		
+		sp_personlist = new JScrollPane();
+		sp_personlist.setPreferredSize(new Dimension(220, 2));
+		sp_personlist.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		contentPane.add(sp_personlist, BorderLayout.CENTER);	
+		list_person = new JList();
+		sp_personlist.add(list_person);
+		sp_personlist.setViewportView(list_person);
 		setVisible(true);
-		connectServer();
-
+		connectServer();		
+		
 		// li_userList.setListData(new String [] {id});
 
 		addWindowListener(new WindowAdapter() {
