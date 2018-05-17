@@ -31,9 +31,8 @@ public class FtpClientThread extends JFrame implements Runnable{
 	public static boolean isCancel;
 	private File file;
 	private Data data;
-	private String s [];
-	public static long totalSize; 
-	public long fileSize;
+	private String filedownString [];	
+	private String fileupString [];
 	
 	public FtpClientThread(DataInputStream dis, DataOutputStream dos, int mode, String SourceFielPath) {
 		this.dis = dis;
