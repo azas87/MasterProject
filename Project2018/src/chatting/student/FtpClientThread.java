@@ -36,11 +36,12 @@ public class FtpClientThread extends JFrame implements Runnable{
 	public static long totalSize; 
 	public long fileSize;
 	
-	public FtpClientThread(DataInputStream dis, DataOutputStream dos, int mode, String SourceFielPath) {
+	public FtpClientThread(DataInputStream dis, DataOutputStream dos, int mode, String SourceFielPath, long amount) {
 		this.dis = dis;
 		this.dos = dos;
 		this.mode = mode;
 		this.SourceFielPath = SourceFielPath;
+		fileSize = amount;
 	}
 	
 	public void run()

@@ -75,8 +75,7 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 	private JPanel panel;
 	private JLabel lable_file;
 	private JScrollPane scrollPane;
-	private JList file_list;
-	private JButton btnNewButton;
+	private JList li_fileList;
 	private JPanel panel_1;
 	private JPanel panel_2;
 	private JPanel panel_9;
@@ -187,9 +186,6 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 		lbl_count.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lbl_count.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		btnNewButton = new JButton("\uC804\uCCB4\uC120\uD0DD");
-		panel_1.add(btnNewButton, BorderLayout.EAST);
-		
 		scrollPane_1 = new JScrollPane();
 		p_east.add(scrollPane_1, BorderLayout.CENTER);
 		
@@ -206,12 +202,12 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 		scrollPane = new JScrollPane();
 		panel.add(scrollPane, BorderLayout.CENTER);
 		
-		file_list = new JList();
-		file_list.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		file_list.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		file_list.setForeground(Color.LIGHT_GRAY);
-		file_list.addMouseListener(this);
-		scrollPane.setViewportView(file_list);
+		li_fileList = new JList<String>();
+		li_fileList.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		li_fileList.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		li_fileList.setForeground(Color.LIGHT_GRAY);
+		li_fileList.addMouseListener(this);
+		scrollPane.setViewportView(li_fileList);
 		
 		panel_9 = new JPanel();
 		panel.add(panel_9, BorderLayout.NORTH);
@@ -351,20 +347,15 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 		}
 		else if(source == b_upload)
 		{
-			JFileChooser send = new JFileChooser();
-			send.showOpenDialog(this);
-			File file = send.getSelectedFile();
+			data = new Data(id, null, null, Data.FILE_UP);
+			sendData(data);
 		}
 		else if(source == b_download)
 		{
-			JFileChooser save = new JFileChooser();
-			save.showSaveDialog(this);
-			
-			if(save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION)
-			{
-				System.out.println(save.getSelectedFile().toString());
-			}
-			File file = save.getSelectedFile();
+			String s = file_str + "\\" + li_fileList.getSelectedValue();
+			System.out.println("b_download : " + s);
+			data = new Data(id, s, null, Data.FILE_DOWN);
+			sendData(data);
 		}
 		/*else if(source == mi_exit)
 		{
@@ -419,68 +410,57 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 	}
 
 	
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		if(e.getClickCount()==2)
+	public void mouseClicked(MouseEvent e) 
+	{
+		if (e.getClickCount() == 2) 
 		{
-			if(file_list.getSelectedValue().equals(".."))
+			System.out.println("------------mouseClicked-----------");
+			if (li_fileList.getSelectedValue().equals("..")) 
 			{
 				String parent = "";
-				String [] path = file_str.split("\\\\"); //***파일에서 \\는 찾을 때 \를 기호로 인식하므로 \"처럼 \\\\써야함 
+				String[] path = file_str.split("\\\\"); // ***파일에서 \\는 찾을 때 \를 기호로 인식하므로 \"처럼 \\\\써야함
+				/*
+				 * for(int i = 0 ; i < path.length-1 ; i++) { parent += path[i] + "\\"; }
+				 * file_str = parent;
+				 */
 				parent = path[0];
-				for(int i = 1 ; i < path.length-1 ; i++)
-				{
-					 parent += ("\\" + path[i]);
+				for (int i = 1; i < path.length - 1; i++) {
+					parent += ("\\" + path[i]);
 				}
 				file_str = parent;
+				System.out.println(file_str);
 				data = new Data(id, file_str, null, Data.FILE_REQ);
 				sendData(data);
-			}
+			} 
 			else 
 			{
-				for(Map.Entry<String, Boolean> f : HashMapFileList.entrySet())
+				// System.out.println(file_str+"\\"+li_fileList.getSelectedValue());
+				System.out.println(HashMapFileList.size());
+				for (Map.Entry<String, Boolean> f : HashMapFileList.entrySet()) 
 				{
-					if(f.getKey().equals(file_list.getSelectedValue()))
+					System.out.println("경로경로" + file_str);
+					if (f.getKey().equals(li_fileList.getSelectedValue())) 
 					{
-						if(f.getValue())
+						if (f.getValue()) 
 						{
 							System.out.println("11111111");
-							data = new Data(id, file_str+"\\"+file_list.getSelectedValue(), null, Data.FILE_REQ);
+							data = new Data(id, file_str + "\\" + li_fileList.getSelectedValue(), null, Data.FILE_REQ);
 							System.out.println("click : " + data.getMessage());
-						}
+							sendData(data);
+						} 
 						else 
 						{
 							System.out.println("2222222222");
-							data = new Data(id, file_str+"\\"+file_list.getSelectedValue(), null, Data.FILE_DOWN);
+							data = new Data(id, file_str + "\\" + li_fileList.getSelectedValue(), null, Data.FILE_DOWN);
+							sendData(data);
 						}
 					}
-					
+				
 				}
-			
-				/*
-				System.out.println(file_str+"\\"+file_list.getSelectedValue());
-				File f [] = getFileList;
-				System.out.println(f[0]);
-				for(int i = 0 ; i < f.length ; i++)
-				{
-					if(f[i].getName().equals(file_list.getSelectedValue()))
-					{
-						if(f[i].isFile())
-						{
-							data = new Data(id, file_str+"\\"+file_list.getSelectedValue(), null, Data.FILE_DOWN);
-						}
-						else
-						{
-							data = new Data(id, file_str+"\\"+file_list.getSelectedValue(), null, Data.FILE_REQ);
-						}
-					}
-					
-				}*/
-				sendData(data);
 			}
 		}
-		
 	}
+/*
 	
 	public void fileName(File f, int count)
 	{
@@ -514,7 +494,7 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 		}
 		count--;
 		
-	}
+	}*/
 	
 	
 	public void getList(HashMap<String, Boolean> maplist, String str_file)
@@ -570,7 +550,7 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 		{
 			content.addElement(stt);
 		}	
-		file_list.setModel(content);
+		li_fileList.setModel(content);
 	}
 
 	@Override
@@ -598,7 +578,7 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 		
 	}
 	
-	public void ftpconnect(String path, int mode)
+	public void ftpconnect(String path, int mode, long amount)
 	{
 		Socket ftpclient;
 		
@@ -607,7 +587,7 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 			ftpclient = new Socket(SEVER_IP, 7778);
 			dos = new DataOutputStream(ftpclient.getOutputStream());
 			dis = new DataInputStream(ftpclient.getInputStream());
-			FtpClientThread cst = new FtpClientThread(dis, dos, mode, path);
+			FtpClientThread cst = new FtpClientThread(dis, dos, mode, path, amount );
 			Thread t1 = new Thread(cst);
 			t1.start();
 		} catch (UnknownHostException e1) {
@@ -715,7 +695,6 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 			}
 			
 		}	
-			
 	}	
 }
 

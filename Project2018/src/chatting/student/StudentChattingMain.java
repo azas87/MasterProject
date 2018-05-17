@@ -448,7 +448,8 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 	 */
 
 	@Override
-	public void run() {
+	public void run() 
+	{
 		try {
 			oos.writeObject(data);
 		} catch (IOException e1) {
@@ -456,7 +457,8 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 			e1.printStackTrace();
 		}
 		while (!exit) {
-			try {
+			try 
+			{
 				data = (Data) ois.readObject();
 				switch (data.getStatus()) {
 				case Data.CHAT_LOGIN:
@@ -512,7 +514,7 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 							//if(File_amount <= parentFile_amount)
 							{
 								ftpconnect(file_str + "\\" + li_fileList.getSelectedValue() + "|"
-										+ save.getSelectedFile().getAbsolutePath(), 12);
+										+ save.getSelectedFile().getAbsolutePath(), Data.FILE_DOWN, File_amount);
 								System.out.println("FILE_DOWN : " + file_str + "\\" + li_fileList.getSelectedValue());
 								System.out.println("FILE_DOWN : " + save.getSelectedFile().getAbsolutePath());
 							}
@@ -535,7 +537,8 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 						System.out.println("내파일" + send.getSelectedFile().getPath());
 						sendFile_amount = String.valueOf(file.length());
 						System.out.println("File_up : " + sendFile_path);
-						ftpconnect(sendFile_path + "|" + sendFile_amount + "|" + send.getSelectedFile().getPath(), 13);
+						ftpconnect(sendFile_path + "|" + sendFile_amount + "|" 
+								+ send.getSelectedFile().getPath(), Data.FILE_UP, file.length());
 					} else {
 						System.out.println("파일 업로드 취소");
 					}
@@ -544,9 +547,10 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
-			}
-
+				exit = true;
+			} 
 		}
+		closeAll();
 	}
 
 	@Override
@@ -693,14 +697,14 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 	public void mouseExited(MouseEvent e) {
 	}
 
-	public void ftpconnect(String path, int mode) {
+	public void ftpconnect(String path, int mode, long amount) {
 		Socket ftpclient;
 
 		try {
 			ftpclient = new Socket(SEVER_IP, fileServer_port);
 			dos = new DataOutputStream(ftpclient.getOutputStream());
 			dis = new DataInputStream(ftpclient.getInputStream());
-			FtpClientThread cst = new FtpClientThread(dis, dos, mode, path);
+			FtpClientThread cst = new FtpClientThread(dis, dos, mode, path, amount);
 			Thread t1 = new Thread(cst);
 			t1.start();
 		} catch (UnknownHostException e1) {
