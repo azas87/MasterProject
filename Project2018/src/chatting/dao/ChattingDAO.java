@@ -71,9 +71,9 @@ public class ChattingDAO {
 		return list;
 	}
 	
-	public Log findLog(String name) {
+	public ArrayList<Log> findLog(String name) {
 		SqlSession session = null;
-		Log result = null;
+		ArrayList<Log> result = new ArrayList<>();
 		
 		try {
 			session = factory.openSession();
@@ -114,6 +114,23 @@ public class ChattingDAO {
 			session = factory.openSession();
 			ChattingMapper mapper = session.getMapper(ChattingMapper.class);
 			result = mapper.logCount();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if( session != null ) session.close();
+		}
+		
+		return result;
+	}
+	
+	public Log findClass(String name) {
+		SqlSession session = null;
+		Log result = null;
+		
+		try {
+			session = factory.openSession();
+			ChattingMapper mapper = session.getMapper(ChattingMapper.class);
+			result = mapper.findClass(name);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

@@ -32,6 +32,7 @@ public class Data implements Serializable
 	public static final int FILE_ACCESS = 11; //파일시작-처음파일경로를 받기위해
 	public static final int FILE_DOWN = 12;
 	public static final int FILE_UP=13;
+	public static final int Log_Search = 14;
 	
 	public Data(String id, String message, String targetId, int status) 
 	{
