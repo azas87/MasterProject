@@ -311,8 +311,8 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 					data = new Data(id, path + "test", Data.FILE_CREATE);
 					sendData(data);
 
-					data = new Data(id, null, Data.CHAT_TREE);
-					sendData(data);
+//					data = new Data(id, null, Data.CHAT_TREE);
+//					sendData(data);
 				}
 			} else {
 				System.out.println("폴더를 생성할 경로를 선택하세요.");
@@ -344,8 +344,8 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 					data = new Data(id, path, Data.FILE_DELETE);
 					sendData(data);
 
-					data = new Data(id, null, Data.CHAT_TREE);
-					sendData(data);
+//					data = new Data(id, null, Data.CHAT_TREE);
+//					sendData(data);
 				}
 			} else {
 				System.out.println("폴더를 생성할 경로를 선택하세요.");

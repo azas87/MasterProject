@@ -63,7 +63,7 @@ public class ChattingServerThread implements Runnable {
 //						System.out.println("grgrgrg");
 						System.out.println(clientIp);
 						insertLog("Á¢¼Ó");
-						
+						System.out.println(data.getId());
 						broadCasting();
 						break;
 						
@@ -91,8 +91,10 @@ public class ChattingServerThread implements Runnable {
 					case Data.Log_ALL:
 						data.setLog(dao.listLogs());
 						ArrayList<Log> l = dao.listLogs();
-						for( Log d : l ) {
-							System.out.println(d);
+						System.out.println(l.size());
+						for( int i = 6; i < l.size(); i++ ) 
+						{
+							System.out.println(i+" : "+l.get(i));
 						}
 						broadCasting();
 						
@@ -165,8 +167,14 @@ public class ChattingServerThread implements Runnable {
 			} catch (IOException e) {
 				e.printStackTrace();
 				exit = true;
-			}
+			} 
 		} // while
+			try {
+				if( oos != null ) oos.close();
+				if( ois != null ) ois.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		
 	} // run()
 	
@@ -183,6 +191,7 @@ public class ChattingServerThread implements Runnable {
 			}
 		}
 	}
+	
 	public HashMap<String, Boolean> makeFileList(String path)
 	{
 		HashMap<String, Boolean> list = new HashMap<String, Boolean >();
@@ -246,6 +255,17 @@ public class ChattingServerThread implements Runnable {
 	
 	public void insertLog(String result) {
 //		dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()).getStdNo(), dao.logCount()+1, 'o', result, clientIp, "18/05/17", "18/05/17"));
-		dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()).getStdNo(), dao.logCount()+1, 'O', result, clientIp, "18/05/17", "18/05/17"));
+		
+		try {
+			String tmp = dao.getStdNo(data.getId()).getStdNo();
+			
+			if( tmp != null )
+				dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()).getStdNo(), dao.logCount()+1, 'O', result, clientIp, "18/05/17", "18/05/17"));
+			
+		} catch (Exception e) {
+			return;
+		}
+		
+		
 	}
 }
