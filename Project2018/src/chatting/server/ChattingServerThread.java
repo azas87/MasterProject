@@ -31,11 +31,13 @@ public class ChattingServerThread implements Runnable {
 	private ChattingDAO dao = new ChattingDAO();
 	private SimpleDateFormat date = new SimpleDateFormat("yyyy/mm/dd");
 	private SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
+	private String clientIp;
 	
-	public ChattingServerThread(ObjectInputStream ois, ObjectOutputStream oos, int port) {
+	public ChattingServerThread(ObjectInputStream ois, ObjectOutputStream oos, int port, String ClientIp) {
 		this.ois = ois;
 		this.oos = oos;
 		this.port = port;
+		this.clientIp = clientIp;
 	}
 
 	@Override
@@ -57,9 +59,11 @@ public class ChattingServerThread implements Runnable {
 							list.add(id);
 						}
 						data.setUserList(list);
-						System.out.println("fefefe");
+						
+						System.out.println();
+//						System.out.println("fefefe");
 //						dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', "立加", date.format(new Date()), time.format(new Date())));
-						System.out.println("grgrgrg");
+//						System.out.println("grgrgrg");
 						broadCasting();
 						break;
 						
@@ -80,7 +84,7 @@ public class ChattingServerThread implements Runnable {
 							list2.add(id);
 						}
 						data.setUserList(list2);
-						dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', "秦力", date.format(new Date()), time.format(new Date())));
+//						dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', "秦力", date.format(new Date()), time.format(new Date())));
 						broadCasting();
 						break;
 					
@@ -108,21 +112,26 @@ public class ChattingServerThread implements Runnable {
 							data.setTargetId(port+"");
 						}
 						targetId = data.getId();
-						dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', fileNameSplit(), date.format(new Date()), time.format(new Date())));
+//						dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', fileNameSplit(), date.format(new Date()), time.format(new Date())));
 						userList.get(targetId).writeObject(data);
 						break;
 						
 					case Data.FILE_ACCESS:
 						path = new File(base_Path);
-						data.setFile(path.listFiles());
+						System.out.println(base_Path);
+						data.setFileList(makeFileList(base_Path));
 						data.setMessage(base_Path);
 						broadCasting();
 						break;
 						
 					case Data.FILE_REQ:
-						path = new File(data.getMessage());
 						data.setStatus(Data.FILE_ACCEPT);
-						data.setFile(path.listFiles());
+						data.setFileList(makeFileList(data.getMessage()));
+						File test[] = path.listFiles();
+						for(int i = 0; i < test.length; i++ )
+						{
+							System.out.println(test[i].getName()+"    "+test[i].isDirectory());
+						}
 						broadCasting();
 						//targetId = data.getId();
 						//userList.get(targetId).writeObject(data);
@@ -132,7 +141,7 @@ public class ChattingServerThread implements Runnable {
 						path = new File(data.getMessage());
 						path.mkdir();
 						getParent();
-						dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', fileNameSplit(), date.format(new Date()), time.format(new Date())));
+//						dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', fileNameSplit(), date.format(new Date()), time.format(new Date())));
 						broadCasting();
 						break;
 						
@@ -143,7 +152,7 @@ public class ChattingServerThread implements Runnable {
 						}
 						path.delete();
 						getParent();
-						dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', fileNameSplit(), date.format(new Date()), time.format(new Date())));
+//						dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', fileNameSplit(), date.format(new Date()), time.format(new Date())));
 						broadCasting();
 						break;
 						
@@ -171,6 +180,18 @@ public class ChattingServerThread implements Runnable {
 			}
 		}
 	}
+	public HashMap<String, Boolean> makeFileList(String path)
+	{
+		HashMap<String, Boolean> list = new HashMap<String, Boolean >();
+		System.out.println(path);
+		
+		File files = new File(path);
+		for(File file : files.listFiles())
+		{
+			list.put(file.getName(), file.isDirectory());
+		}		
+		return list;
+	}
 	
 	public void deleteDir(File dir) {
 		File[] rmFiles = dir.listFiles();
@@ -189,7 +210,7 @@ public class ChattingServerThread implements Runnable {
 	public void getParent() {
 		File parent = path.getParentFile();
 		
-		data.setFile(parent.listFiles());
+		data.setFileList(makeFileList(parent.getAbsolutePath()));
 		data.setStatus(Data.FILE_ACCEPT);
 	}
 	

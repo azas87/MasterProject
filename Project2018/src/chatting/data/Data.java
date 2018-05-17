@@ -4,6 +4,7 @@ package chatting.data;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Vector;
 
 import javax.swing.JTree;
@@ -17,7 +18,7 @@ public class Data implements Serializable
 	private Vector<String> userList; //서버에 접속해 있는 사용자 ID목록
 	private JTree jtree;
 	private ArrayList<Log> log;
-	private File [] file;
+	private HashMap<String, Boolean> fileList;
 	
 	public static final int CHAT_LOGIN = 1;   //로그인
 	public static final int CHAT_MESSAGE = 2; //일반 대화
@@ -106,18 +107,11 @@ public class Data implements Serializable
 		this.userList = userList;
 	}
 
-	public File[] getFile() {
-		return file;
+	public HashMap<String, Boolean> getFileList() {
+		return fileList;
 	}
 
-	public void setFile(File[] file) {
-		this.file = file;
+	public void setFileList(HashMap<String, Boolean> fileList) {
+		this.fileList = fileList;
 	}
-	
-	
-	
-	
-	
-	
-
 }	

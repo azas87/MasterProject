@@ -31,14 +31,17 @@ public class FileServerThread implements Runnable {
 	public void run() {
 		try {
 			upDownStatus = disSocket.readInt();		// Status 값 받고
+			System.out.println("gdfgdfg");
 			
 			if( upDownStatus == Data.FILE_DOWN )
 			{
 				path = disSocket.readUTF();			// 파일 경로 받고
+				System.out.println("34ert");
 				file = new File(path);
 				if( file.exists() )
 				{
 					dosSocket.writeUTF("Y");		// 파일 있으면 Y 값 보내고
+					System.out.println("123123");
 					fileDown();						// 파일 전송 메서드 호출
 				}
 				else
