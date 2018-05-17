@@ -33,6 +33,8 @@ public class FtpClientThread extends JFrame implements Runnable{
 	private Data data;
 	private String filedownString [];	
 	private String fileupString [];
+	public static long totalSize; 
+	public long fileSize;
 	
 	public FtpClientThread(DataInputStream dis, DataOutputStream dos, int mode, String SourceFielPath) {
 		this.dis = dis;
@@ -70,7 +72,6 @@ public class FtpClientThread extends JFrame implements Runnable{
 		}
 		else
 		{
-			// 왜 여기가 합쳐지지 않을까?
 			try 
 			{
 				dos.writeInt(Data.FILE_UP);
