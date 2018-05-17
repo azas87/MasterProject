@@ -48,9 +48,8 @@ import javax.swing.tree.TreeNode;
 
 import chatting.data.Data;
 
-public class StudentChattingMain extends JFrame implements ActionListener, Runnable, MouseListener 
-{
-	//찬주 테스트
+public class StudentChattingMain extends JFrame implements ActionListener, Runnable, MouseListener {
+	// 찬주 테스트
 	private JPanel contentPane;
 	private JScrollPane sp_chatOutput;
 	private JTextArea ta_chatOutput;
@@ -81,11 +80,11 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 	DefaultMutableTreeNode node;
 	public static JProgressBar progressbar;
 	public static JLabel lbl_per;
-//	private String SEVER_IP = "127.0.0.1";
-//	private String SEVER_IP = "203.233.196.50";
-//	private String SEVER_IP = "203.233.196.48";
+	// private String SEVER_IP = "127.0.0.1";
+	// private String SEVER_IP = "203.233.196.50";
+	// private String SEVER_IP = "203.233.196.48";
 	private String SEVER_IP = "203.233.196.40";
-	
+
 	private FtpClientThread cst;
 	private JButton btn_cancel;
 	private boolean exit;
@@ -99,19 +98,20 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 	private JButton b_filelist;
 	private int fileServer_port;
 	private HashMap<String, Boolean> HashMapFileList;
-	private	long parentFile_amount;
+	private long parentFile_amount;
 	private long File_amount;
-	
+	private String sendFile_path;
+	private String sendFile_amount;
+
 	/**
-	private FtpClientThread cst;
-	 * Launch the application.
+	 * private FtpClientThread cst; Launch the application.
 	 */
 
 	/**
 	 * Create the frame.
 	 */
 	public StudentChattingMain(String id) {
-		
+
 		this.id = id;
 		setTitle("SCIT(\uD559\uC0DD)");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -156,7 +156,7 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 		lbl_count.setPreferredSize(new Dimension(110, 25));
 		panel.add(lbl_count, BorderLayout.NORTH);
 		lbl_count.setHorizontalAlignment(SwingConstants.CENTER);
-		
+
 		b_upload = new JButton("\uC5C5\uB85C\uB4DC");
 		b_upload.setActionCommand("");
 		b_upload.setPreferredSize(new Dimension(81, 23));
@@ -164,24 +164,20 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 		panel.add(b_upload, BorderLayout.CENTER);
 
 		/*
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode("파일 목록");
-		tree = new JTree(root);
-		tree.disable();
-		tree.addMouseListener(this);
-		JScrollPane jsp = new JScrollPane(tree);
-		p_east_left.add(jsp, BorderLayout.CENTER);
+		 * DefaultMutableTreeNode root = new DefaultMutableTreeNode("파일 목록"); tree = new
+		 * JTree(root); tree.disable(); tree.addMouseListener(this); JScrollPane jsp =
+		 * new JScrollPane(tree); p_east_left.add(jsp, BorderLayout.CENTER); b_download
+		 * = new JButton("\uB2E4\uC6B4\uB85C\uB4DC");
+		 * b_download.addActionListener(this); panel.add(b_download, BorderLayout.EAST);
+		 */
 		b_download = new JButton("\uB2E4\uC6B4\uB85C\uB4DC");
 		b_download.addActionListener(this);
 		panel.add(b_download, BorderLayout.EAST);
-		*/
-		b_download = new JButton("\uB2E4\uC6B4\uB85C\uB4DC");
-		b_download.addActionListener(this);
-		panel.add(b_download, BorderLayout.EAST);
-		
+
 		b_filelist = new JButton("\uD30C\uC77C\uBAA9\uB85D");
 		b_filelist.addActionListener(this);
 		panel.add(b_filelist, BorderLayout.WEST);
-		
+
 		sp_userList = new JScrollPane();
 		sp_userList.setAutoscrolls(true);
 		sp_userList.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -237,222 +233,160 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 		}
 	}
 
-	public void actionPerformed(ActionEvent e) 
-	{
+	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
-		
-		
+
 		BufferedWriter out = null;
 		BufferedReader in = null;
-		
+
 		String message = ta_chatOutput.getText();
-		//data = new Data(id, message, Data.CHAT_MESSAGE);
-		//sendData(data);
-		
+		// data = new Data(id, message, Data.CHAT_MESSAGE);
+		// sendData(data);
+
 		StringTokenizer st = new StringTokenizer(message, "\n");
-		
-		if(source == tf_chatInput)
-		{	
+
+		if (source == tf_chatInput) {
 			String message1 = tf_chatInput.getText();
-			//ta_chatOutput.append("["+id+"]" + message1 +"\n");
+			// ta_chatOutput.append("["+id+"]" + message1 +"\n");
 			data = new Data(id, message1, Data.CHAT_MESSAGE);
 			sendData(data);
 			tf_chatInput.setText("");
-		}
-		else if(source == btn_send)
-		{
+		} else if (source == btn_send) {
 			String message1 = tf_chatInput.getText();
-			//ta_chatOutput.append("["+id+"]" + message1 +"\n");
+			// ta_chatOutput.append("["+id+"]" + message1 +"\n");
 			data = new Data(id, message1, Data.CHAT_MESSAGE);
 			sendData(data);
 			tf_chatInput.setText("");
-		}
-		else if( source == b_filelist)
-		{
+		} else if (source == b_filelist) {
 			System.out.println("btn_filelist");
 			data = new Data(id, null, Data.FILE_ACCESS);
 			sendData(data);
-		}
-		else if(source == b_upload)
-		{
+		} else if (source == b_upload) {
 			data = new Data(id, null, null, Data.FILE_UP);
 			sendData(data);
-			JFileChooser send = new JFileChooser();
-			send.showOpenDialog(this);
-			File file = send.getSelectedFile();
-			
-		}	
-		else if(source == b_download)
-		{
+		} else if (source == b_download) {
 			String s = file_str + "\\" + li_fileList.getSelectedValue();
 			System.out.println("b_download : " + s);
 			data = new Data(id, s, null, Data.FILE_DOWN);
+			sendData(data);
 		}
-		
+
 		/*
-		else if( source == mi_exit )
-		{
-			int choice = JOptionPane.showConfirmDialog(this, "정말로 종료하시겠습니까?", "종료", JOptionPane.YES_NO_OPTION);
-			
-			if( choice == JOptionPane.YES_OPTION )
-			{
-				data = new Data(name, "님이 종료 했습니다.", Data.CHAT_LOGOUT);
-				sendData(data);
-				System.exit(0);
-			}
-		}
-		*/
-		else if( source == btn_create_folder )
-		{
+		 * else if( source == mi_exit ) { int choice =
+		 * JOptionPane.showConfirmDialog(this, "정말로 종료하시겠습니까?", "종료",
+		 * JOptionPane.YES_NO_OPTION);
+		 * 
+		 * if( choice == JOptionPane.YES_OPTION ) { data = new Data(name, "님이 종료 했습니다.",
+		 * Data.CHAT_LOGOUT); sendData(data); System.exit(0); } }
+		 */
+		else if (source == btn_create_folder) {
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-			
-			if(node != null)
-			{
+
+			if (node != null) {
 				TreeNode[] tn = node.getPath();
-				
+
 				int index = tn.length;
-				if(node.getChildCount() == 0)
-				{
+				if (node.getChildCount() == 0) {
 					index -= 2;
-				}
-				else
-				{
+				} else {
 					index--;
 				}
-				
-				
-				int choice = JOptionPane.showConfirmDialog(this, tn[index]+"폴더에 새로운 폴더를 생성하시겠습니까?", "종료", JOptionPane.YES_NO_OPTION);
-				if( choice == JOptionPane.YES_OPTION )
-				{
-					String path="";				
-					for(int i = 1; i <= index; i++)
-					{
-						path += tn[i]+"\\";
+
+				int choice = JOptionPane.showConfirmDialog(this, tn[index] + "폴더에 새로운 폴더를 생성하시겠습니까?", "종료",
+						JOptionPane.YES_NO_OPTION);
+				if (choice == JOptionPane.YES_OPTION) {
+					String path = "";
+					for (int i = 1; i <= index; i++) {
+						path += tn[i] + "\\";
 					}
-					
+
 					System.out.println(path);
-					
-					data = new Data(id, path+"test", Data.FILE_CREATE);
+
+					data = new Data(id, path + "test", Data.FILE_CREATE);
 					sendData(data);
-					
+
 					data = new Data(id, null, Data.CHAT_TREE);
 					sendData(data);
 				}
-			}
-			else
-			{
+			} else {
 				System.out.println("폴더를 생성할 경로를 선택하세요.");
 			}
-		}
-		else if( source == btn_delete_folder )
-		{
+		} else if (source == btn_delete_folder) {
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-			
-			if(node != null)
-			{
+
+			if (node != null) {
 				TreeNode[] tn = node.getPath();
-				
+
 				int index = tn.length;
-				if(node.getChildCount() == 0)
-				{
+				if (node.getChildCount() == 0) {
 					index -= 2;
-				}
-				else
-				{
+				} else {
 					index--;
 				}
-				
-				
-				int choice = JOptionPane.showConfirmDialog(this, tn[index]+"폴더를 삭제 하시겠습니까?", "종료", JOptionPane.YES_NO_OPTION);
-				if( choice == JOptionPane.YES_OPTION )
-				{
-					String path="";				
+
+				int choice = JOptionPane.showConfirmDialog(this, tn[index] + "폴더를 삭제 하시겠습니까?", "종료",
+						JOptionPane.YES_NO_OPTION);
+				if (choice == JOptionPane.YES_OPTION) {
+					String path = "";
 					// 여긴 마지막 노드까지 나와야 해서 길이만큼 뽑어야 함.
-					for(int i = 1; i < tn.length; i++)
-					{
-						path += tn[i]+"\\";
+					for (int i = 1; i < tn.length; i++) {
+						path += tn[i] + "\\";
 					}
-					
+
 					System.out.println(path);
-					
+
 					data = new Data(id, path, Data.FILE_DELETE);
 					sendData(data);
-					
+
 					data = new Data(id, null, Data.CHAT_TREE);
 					sendData(data);
 				}
-			}
-			else
-			{
+			} else {
 				System.out.println("폴더를 생성할 경로를 선택하세요.");
 			}
-			
+
 		}
-		/*// 트리용
-		else if( source == btn_download)
-		{
-			node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-			if (node != null && (node.getChildCount() == 0) ) 
-			{
-				String path="";
-				TreeNode[] tn = node.getPath();			
-				for(int i = 1; i < tn.length; i++)
-				{
-					path += tn[i]+"\\";
-				}
-				
-				System.out.println(path.substring(0, path.length()-1));
-	    		ftpconnect(path.substring(0, path.length()-1),0);
-			}
-		}
-		*/
-		else if( source == btn_cancel)
-		{
+		/*
+		 * // 트리용 else if( source == btn_download) { node = (DefaultMutableTreeNode)
+		 * tree.getLastSelectedPathComponent(); if (node != null &&
+		 * (node.getChildCount() == 0) ) { String path=""; TreeNode[] tn =
+		 * node.getPath(); for(int i = 1; i < tn.length; i++) { path += tn[i]+"\\"; }
+		 * 
+		 * System.out.println(path.substring(0, path.length()-1));
+		 * ftpconnect(path.substring(0, path.length()-1),0); } }
+		 */
+		else if (source == btn_cancel) {
 			FtpClientThread.isCancel = true;
-		}
-		else if( source == btn_logs)
-		{
+		} else if (source == btn_logs) {
 			System.out.println("1111");
 			data = new Data(id, null, Data.Log_ALL);
 			sendData(data);
 		}
-		
-	}
-	
-	
-	public void fileName(File f, int count)
-	{
-		
-		File [] ff = f.listFiles();
-		
-		
-		for(File file : ff)
-		{
-			if(file.isDirectory())
-			{
-				for(int i = 0 ; i < count ; i++)
-				{
-					//as.add("\t");
-				}	
-				as.add(file.getName());
-				fileName(file,count+1);
-				
-			}
-			else
-			{
-				for(int i = 0 ; i < count ; i++)
-				{
-					//as.add("\t");
-				}	
-				as.add(file.getName());
-			}
-			
-		}
-		
-	}
-		
-	
 
+	}
+
+	public void fileName(File f, int count) {
+
+		File[] ff = f.listFiles();
+
+		for (File file : ff) {
+			if (file.isDirectory()) {
+				for (int i = 0; i < count; i++) {
+					// as.add("\t");
+				}
+				as.add(file.getName());
+				fileName(file, count + 1);
+
+			} else {
+				for (int i = 0; i < count; i++) {
+					// as.add("\t");
+				}
+				as.add(file.getName());
+			}
+
+		}
+
+	}
 
 	/*
 	 * else if(source == mi_exit) { int choice = JOptionPane.showConfirmDialog(this,
@@ -503,10 +437,8 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		while( !exit )
-		{
-			try 
-			{
+		while (!exit) {
+			try {
 				data = (Data) ois.readObject();
 				switch (data.getStatus()) {
 				case Data.CHAT_LOGIN:
@@ -522,59 +454,71 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 				case Data.CHAT_WHISPER:
 					ta_chatOutput.append("[" + data.getId() + "](귓말)" + data.getMessage() + "\n");
 					break;
-				case Data.FILE_ACCEPT : 
+				case Data.FILE_ACCEPT:
 					file_str = data.getMessage();
 					HashMapFileList = data.getFileList();
 					System.out.println("----------Data.FILE_ACCEPT-------------");
-					/*for(int i=0; i < FileList.length; i++)
-					{
-						System.out.println(FileList[i].getAbsolutePath()+"    "+ FileList[i].isDirectory() +"    " + FileList[i].exists());
-					}*/
+					/*
+					 * for(int i=0; i < FileList.length; i++) {
+					 * System.out.println(FileList[i].getAbsolutePath()+"    "+
+					 * FileList[i].isDirectory() +"    " + FileList[i].exists()); }
+					 */
 					System.out.println("file_accept " + data.getMessage());
 					getList(HashMapFileList, file_str);
-					
+
 					break;
-				case Data.FILE_ACCESS : 
+				case Data.FILE_ACCESS:
 					file_access = data.getMessage();
 					System.out.println("file_acccess " + data.getMessage());
 					data = new Data(id, file_access, null, Data.FILE_REQ);
 					sendData(data);
 					break;
-				case Data.FILE_DOWN :
+				case Data.FILE_DOWN:
 					System.out.println("FILE_DOWN : " + data.getMessage());
-					String s [] = data.getMessage().split("\\|");
-					//s[0] : y/n검사  s[1] : 용량
-					System.out.println(file_str+"\\"+li_fileList.getSelectedValue());
-					if(s[0].equals("Y"))
-					{
+					String s[] = data.getMessage().split("\\|");
+					// s[0] : y/n검사 s[1] : 용량
+					System.out.println(file_str + "\\" + li_fileList.getSelectedValue());
+					if (s[0].equals("Y")) {
 						System.out.println(s[0]);
 						System.out.println(s[1]);
-						fileServer_port = Integer.parseInt(data.getTargetId());						
+						fileServer_port = Integer.parseInt(data.getTargetId());
 						File_amount = Long.parseLong(s[1]);
 						JFileChooser save = new JFileChooser();
 						save.setSelectedFile(new File((String) li_fileList.getSelectedValue()));
-						
-						if(save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION)
+
+						if (save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) 
 						{
-							//System.out.println(save.getSelectedFile().toString());
-							//System.out.println(parentFile_amount);
-							//parentFile_amount = save.getSelectedFile().getFreeSpace();
+							// System.out.println(save.getSelectedFile().toString());
+							// System.out.println(parentFile_amount);
+							// parentFile_amount = save.getSelectedFile().getFreeSpace();
 							//if(File_amount <= parentFile_amount)
 							{
-								ftpconnect(file_str+"\\"+li_fileList.getSelectedValue()
-								+"|"+save.getSelectedFile().getAbsolutePath(), 12);
-								System.out.println("FILE_DOWN : "+file_str+"\\"+li_fileList.getSelectedValue());
+								ftpconnect(file_str + "\\" + li_fileList.getSelectedValue() + "|"
+										+ save.getSelectedFile().getAbsolutePath(), 12);
+								System.out.println("FILE_DOWN : " + file_str + "\\" + li_fileList.getSelectedValue());
 								System.out.println("FILE_DOWN : " + save.getSelectedFile().getAbsolutePath());
-							}	
+							}
+						} else {
+
 						}
-					}
-					else
-					{
+					} else {
 						System.out.println("파일이 없습니다.");
 					}
 					break;
-				case Data.FILE_UP :
-					
+				case Data.FILE_UP:
+					fileServer_port = Integer.parseInt(data.getTargetId());
+					JFileChooser send = new JFileChooser();
+					if (send.showOpenDialog(this) == send.APPROVE_OPTION) {
+
+						sendFile_path = file_str + "\\" + send.getSelectedFile().getName();
+						File file = new File(send.getSelectedFile().getPath());
+						System.out.println("내파일" + send.getSelectedFile().getPath());
+						sendFile_amount = String.valueOf(file.length());
+						System.out.println("File_up : " + sendFile_path);
+						ftpconnect(sendFile_path + "|" + sendFile_amount + "|" + send.getSelectedFile().getPath(), 13);
+					} else {
+						System.out.println("파일 업로드 취소");
+					}
 				}
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
@@ -587,180 +531,141 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if(e.getClickCount()==2)
-		{
+		if (e.getClickCount() == 2) {
 			System.out.println("------------mouseClicked-----------");
-			if(li_fileList.getSelectedValue().equals(".."))
-			{
+			if (li_fileList.getSelectedValue().equals("..")) {
 				String parent = "";
-				String [] path = file_str.split("\\\\"); //***파일에서 \\는 찾을 때 \를 기호로 인식하므로 \"처럼 \\\\써야함 
-				/*for(int i = 0 ; i < path.length-1 ; i++)
-				{
-					 parent += path[i] + "\\";
-				}
-				file_str = parent;*/
+				String[] path = file_str.split("\\\\"); // ***파일에서 \\는 찾을 때 \를 기호로 인식하므로 \"처럼 \\\\써야함
+				/*
+				 * for(int i = 0 ; i < path.length-1 ; i++) { parent += path[i] + "\\"; }
+				 * file_str = parent;
+				 */
 				parent = path[0];
-				for(int i = 1 ; i < path.length-1 ; i++)
-				{
-					 parent += ("\\" + path[i]);
+				for (int i = 1; i < path.length - 1; i++) {
+					parent += ("\\" + path[i]);
 				}
 				file_str = parent;
 				data = new Data(id, file_str, null, Data.FILE_REQ);
 				sendData(data);
-			}
-			else 
-			{
-				//System.out.println(file_str+"\\"+li_fileList.getSelectedValue());
-				
-				for(Map.Entry<String, Boolean> f : HashMapFileList.entrySet())
-				{
-					if(f.getKey().equals(li_fileList.getSelectedValue()))
-					{
-						if(f.getValue())
-						{
+			} else {
+				// System.out.println(file_str+"\\"+li_fileList.getSelectedValue());
+
+				for (Map.Entry<String, Boolean> f : HashMapFileList.entrySet()) {
+					if (f.getKey().equals(li_fileList.getSelectedValue())) {
+						if (f.getValue()) {
 							System.out.println("11111111");
-							data = new Data(id, file_str+"\\"+li_fileList.getSelectedValue(), null, Data.FILE_REQ);
+							data = new Data(id, file_str + "\\" + li_fileList.getSelectedValue(), null, Data.FILE_REQ);
 							System.out.println("click : " + data.getMessage());
-						}
-						else 
-						{
+						} else {
 							System.out.println("2222222222");
-							data = new Data(id, file_str+"\\"+li_fileList.getSelectedValue(), null, Data.FILE_DOWN);
+							data = new Data(id, file_str + "\\" + li_fileList.getSelectedValue(), null, Data.FILE_DOWN);
 						}
 					}
-					
+
 				}
-				/*for(int i = 0 ; i < f.length ; i++)
-				{
-					System.out.println("f[i].getName() : " + f[i].getAbsolutePath());
-					System.out.println("li_fileList.getSelectedValue() : " + li_fileList.getSelectedValue());
-					if(f[i].getName().equals(li_fileList.getSelectedValue()))
-					{
-						if(f[i].isDirectory())
-						{
-							System.out.println("11111111");
-							data = new Data(id, file_str+"\\"+li_fileList.getSelectedValue(), null, Data.FILE_REQ);
-							System.out.println("click : " + data.getMessage());
-						}
-						else 
-						{
-							System.out.println("2222222222");
-							System.out.println(f[i].getAbsolutePath()+"    " + f[i].isDirectory() + "      " +  f[i].isFile());
-							System.out.println("333333333");
-							data = new Data(id, file_str+"\\"+li_fileList.getSelectedValue(), null, Data.FILE_DOWN);
-						}
-					}
-					
-				}	*/
+				/*
+				 * for(int i = 0 ; i < f.length ; i++) { System.out.println("f[i].getName() : "
+				 * + f[i].getAbsolutePath());
+				 * System.out.println("li_fileList.getSelectedValue() : " +
+				 * li_fileList.getSelectedValue());
+				 * if(f[i].getName().equals(li_fileList.getSelectedValue())) {
+				 * if(f[i].isDirectory()) { System.out.println("11111111"); data = new Data(id,
+				 * file_str+"\\"+li_fileList.getSelectedValue(), null, Data.FILE_REQ);
+				 * System.out.println("click : " + data.getMessage()); } else {
+				 * System.out.println("2222222222");
+				 * System.out.println(f[i].getAbsolutePath()+"    " + f[i].isDirectory() +
+				 * "      " + f[i].isFile()); System.out.println("333333333"); data = new
+				 * Data(id, file_str+"\\"+li_fileList.getSelectedValue(), null, Data.FILE_DOWN);
+				 * } }
+				 * 
+				 * }
+				 */
 				sendData(data);
-				
-				/*if(file.isDirectory())
-				{
-					file_access += "\\"+li_fileList.getSelectedValue();
-				}*/	
-			
+
+				/*
+				 * if(file.isDirectory()) { file_access += "\\"+li_fileList.getSelectedValue();
+				 * }
+				 */
+
 			}
-			//getList();
+			// getList();
 		}
-		
-		
+
 	}
-	
-	public void getList(HashMap<String, Boolean> maplist, String str_file)
-	{
-	
-		//String [] str = file.list();
-		//File [] f = file.listFiles();
+
+	public void getList(HashMap<String, Boolean> maplist, String str_file) {
+
+		// String [] str = file.list();
+		// File [] f = file.listFiles();
 		System.out.println("---------getList------------");
-		
-		
-		/*for(int i=0; i < f.length; i++)
-		{
-			System.out.println(f[i].getAbsolutePath()+"    "+ f[i].isDirectory()+"    ----");
-		}*/
-		
-		
+
+		/*
+		 * for(int i=0; i < f.length; i++) {
+		 * System.out.println(f[i].getAbsolutePath()+"    "+
+		 * f[i].isDirectory()+"    ----"); }
+		 */
+
 		ArrayList<String> af = new ArrayList<String>();
 		ArrayList<String> ad = new ArrayList<String>();
-		
-		for(Map.Entry<String, Boolean> f : maplist.entrySet())
-		{
-			if(f.getValue())
-			{
+
+		for (Map.Entry<String, Boolean> f : maplist.entrySet()) {
+			if (f.getValue()) {
 				System.out.println("폴더");
 				ad.add(f.getKey());
-			}
-			else
-			{
+			} else {
 				System.out.println("기타");
 				af.add(f.getKey());
-			}	
-		}
-		/*for(int i = 0 ; i < f.length ; i++)
-		{
-			
-			
-			if(f[i].isDirectory())
-			{
-				System.out.println("폴더");
-				ad.add(f[i].getName());
 			}
-			else
-			{
-				System.out.println("기타");
-				af.add(f[i].getName());
-			}	
-		}*/
+		}
+		/*
+		 * for(int i = 0 ; i < f.length ; i++) {
+		 * 
+		 * 
+		 * if(f[i].isDirectory()) { System.out.println("폴더"); ad.add(f[i].getName()); }
+		 * else { System.out.println("기타"); af.add(f[i].getName()); } }
+		 */
 		Collections.sort(af);
 		Collections.sort(ad);
-		
+
 		content.clear();
-		if(!str_file.equals(file_access))
-		{
+		if (!str_file.equals(file_access)) {
 			String back = "..";
 			content.addElement(back);
 		}
-		
-		for(String ss : ad)
-		{
+
+		for (String ss : ad) {
 			content.addElement(ss);
 		}
-		
-		for(String stt : af)
-		{
+
+		for (String stt : af) {
 			content.addElement(stt);
-		}	
+		}
 		li_fileList.setModel(content);
 	}
-
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		
-		
+
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent e) 
-	{
-		
+	public void mouseEntered(MouseEvent e) {
+
 	}
 
 	@Override
-	public void mouseExited(MouseEvent e) 
-	{
+	public void mouseExited(MouseEvent e) {
 	}
-	
-	public void ftpconnect(String path, int mode)
-	{
+
+	public void ftpconnect(String path, int mode) {
 		Socket ftpclient;
-		
+
 		try {
 			ftpclient = new Socket(SEVER_IP, fileServer_port);
 			dos = new DataOutputStream(ftpclient.getOutputStream());
@@ -776,66 +681,49 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			System.out.println("서버가 켜지 있지 않을 때 나왔음. IOException 1111");
-		} 
-	}	
-	
-	public void closeAll(){
-		System.out.println("모든 자원 종료");
-		try { if(ois != null) {oos.close(); }} catch (IOException e) {}
-		try { if(oos != null) {ois.close();}} catch (IOException e) {}
-		
+		}
 	}
 
+	public void closeAll() {
+		System.out.println("모든 자원 종료");
+		try {
+			if (ois != null) {
+				oos.close();
+			}
+		} catch (IOException e) {
+		}
+		try {
+			if (oos != null) {
+				ois.close();
+			}
+		} catch (IOException e) {
+		}
 
-	/*private DefaultMutableTreeNode getNode(File file)
-	{
-		DefaultMutableTreeNode sub_root = new DefaultMutableTreeNode(file.getName());
-		
-		File list[] = file.listFiles();
-		DefaultMutableTreeNode temp = null;
-		// programfiles//windowsapps 같은 애들이 null 나옴.
-		// 관리자 권한이 없어서 못 보는 폴더네...
-		if(list == null || list.length == 0)	
-		{
-			temp = new DefaultMutableTreeNode("");
-			sub_root.add(temp);
-		}
-		else
-		{
-			ArrayList<File> folderList = new ArrayList<File>();
-			ArrayList<File> fileList = new ArrayList<File>();
-			
-			for(File f : list)
-			{
-				if(f.isDirectory())
-				{
-					folderList.add(f);
-				}
-				else if(f.isFile())
-				{
-					fileList.add(f);
-				}
-			}
-			
-			Collections.sort(folderList);
-			Collections.sort(fileList);
-			
-			for (int i = 0; i < folderList.size(); ++i) 
-			{
-				temp = getNode(folderList.get(i));
-				sub_root.add(temp);
-			}
-			
-			File tempFile;
-			for (int i = 0; i < fileList.size(); ++i) 
-			{
-				tempFile = fileList.get(i) ;
-				temp = new DefaultMutableTreeNode(tempFile.getName());
-				sub_root.add(temp);
-			}
-		}
-		
-		return sub_root;
-	}*/
+	}
+
+	/*
+	 * private DefaultMutableTreeNode getNode(File file) { DefaultMutableTreeNode
+	 * sub_root = new DefaultMutableTreeNode(file.getName());
+	 * 
+	 * File list[] = file.listFiles(); DefaultMutableTreeNode temp = null; //
+	 * programfiles//windowsapps 같은 애들이 null 나옴. // 관리자 권한이 없어서 못 보는 폴더네... if(list
+	 * == null || list.length == 0) { temp = new DefaultMutableTreeNode("");
+	 * sub_root.add(temp); } else { ArrayList<File> folderList = new
+	 * ArrayList<File>(); ArrayList<File> fileList = new ArrayList<File>();
+	 * 
+	 * for(File f : list) { if(f.isDirectory()) { folderList.add(f); } else
+	 * if(f.isFile()) { fileList.add(f); } }
+	 * 
+	 * Collections.sort(folderList); Collections.sort(fileList);
+	 * 
+	 * for (int i = 0; i < folderList.size(); ++i) { temp =
+	 * getNode(folderList.get(i)); sub_root.add(temp); }
+	 * 
+	 * File tempFile; for (int i = 0; i < fileList.size(); ++i) { tempFile =
+	 * fileList.get(i) ; temp = new DefaultMutableTreeNode(tempFile.getName());
+	 * sub_root.add(temp); } }
+	 * 
+	 * return sub_root; }
+	 */
 
 }
