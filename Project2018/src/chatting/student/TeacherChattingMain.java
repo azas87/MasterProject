@@ -126,7 +126,8 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 //	private String SEVER_IP = "127.0.0.1";
 //	private String SEVER_IP = "203.233.196.50";
 //	private String SEVER_IP = "203.233.196.48";
-	private String SEVER_IP = "203.233.196.40";
+	private String SEVER_IP = null; //"203.233.196.40";
+	private int serverPort;
 	
 	private FtpClientThread cst;
 	private JButton btn_cancel;
@@ -149,9 +150,11 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 	private JTable table;
 	private HashMap<String, Boolean> HashMapFileList;
 
-	public TeacherChattingMain(String id) {
-		
+	public TeacherChattingMain( String id, String ipAddress, String portNum) {
+
 		this.id = id;
+		this.SEVER_IP = ipAddress;
+		this.serverPort = Integer.parseInt(portNum);
 		setTitle("SCIT\uCC44\uD305(\uAD00\uB9AC\uC790)");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 616, 424);
@@ -317,7 +320,7 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 	private void connectServer() {
 		Socket client = null;
 		try {
-			client = new Socket(SEVER_IP, 7777);
+			client = new Socket(SEVER_IP, serverPort);
 			oos = new ObjectOutputStream(client.getOutputStream());
 			ois = new ObjectInputStream(client.getInputStream());
 			data = new Data(id, "님이 접속했습니다.", Data.CHAT_LOGIN);

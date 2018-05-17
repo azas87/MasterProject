@@ -31,7 +31,8 @@ public class FtpClientThread extends JFrame implements Runnable{
 	public static boolean isCancel;
 	private File file;
 	private Data data;
-	private String s [];	
+	private String filedownString [];	
+	private String fileupString [];
 	
 	public FtpClientThread(DataInputStream dis, DataOutputStream dos, int mode, String SourceFielPath) {
 		this.dis = dis;
@@ -47,14 +48,14 @@ public class FtpClientThread extends JFrame implements Runnable{
 			try 
 			{
 				dos.writeInt(Data.FILE_DOWN);
-				s= SourceFielPath.split("\\|");
-				System.out.println(s.length);
-				System.out.println(s[0]);
-				System.out.println(s[1]);
-				//s[0] = 파일 경로 s[1] = 저장하고 싶은 위치
-				dos.writeUTF(s[0]);
+				filedownString = SourceFielPath.split("\\|");
+				//System.out.println(filedownString[0]);
+				//System.out.println(filedownString[1]);
+				//filedownString[0] = 파일 경로 filedownString[1] = 저장하고 싶은 위치
+				dos.writeUTF(filedownString[0]);
 				if(dis.readUTF().equals("Y"))
 				{
+					
 					//프로그레스바 만들기
 					fileDown();
 				}	
@@ -66,6 +67,25 @@ public class FtpClientThread extends JFrame implements Runnable{
 		}
 		else
 		{
+			try 
+			{
+				dos.writeInt(Data.FILE_UP);
+				fileupString = SourceFielPath.split("\\|");
+				//fileupString[0]=업로드하고싶은 파일의 위치, [1]=용량, [2]=내파일의경로
+				dos.writeLong(Long.parseLong(fileupString[1]));
+				if(dis.readUTF().equals("Y"))
+				{
+					dos.writeUTF(fileupString[0]);
+					if(dis.readUTF().equals("Y"))
+					{	
+						fileUp();
+					}	
+				}	
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
 			
 		}	
 	}
@@ -74,7 +94,7 @@ public class FtpClientThread extends JFrame implements Runnable{
 	{
 		try 
 		{
-			bosFile = new BufferedOutputStream(new FileOutputStream(s[1]));
+			bosFile = new BufferedOutputStream(new FileOutputStream(filedownString[1]));
 			
 			byte[] b = new byte[4096];
 			int c = 0;
@@ -95,7 +115,7 @@ public class FtpClientThread extends JFrame implements Runnable{
 	
 	public void fileUp() {
 		try {
-			bisFile = new BufferedInputStream(new FileInputStream(file));
+			bisFile = new BufferedInputStream(new FileInputStream(fileupString[2]));
 			
 			byte[] b = new byte[4096];
 			int c = 0;

@@ -83,7 +83,7 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 	// private String SEVER_IP = "127.0.0.1";
 	// private String SEVER_IP = "203.233.196.50";
 	// private String SEVER_IP = "203.233.196.48";
-	private String SEVER_IP = "203.233.196.40";
+	private String SEVER_IP = null; //"203.233.196.40";
 
 	private FtpClientThread cst;
 	private JButton btn_cancel;
@@ -102,7 +102,8 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 	private long File_amount;
 	private String sendFile_path;
 	private String sendFile_amount;
-
+	private int serverPort;
+	
 	/**
 	 * private FtpClientThread cst; Launch the application.
 	 */
@@ -110,9 +111,12 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 	/**
 	 * Create the frame.
 	 */
-	public StudentChattingMain(String id) {
+	public StudentChattingMain(String id, String ipAddress, String portNum) {
 
 		this.id = id;
+		SEVER_IP = ipAddress;
+		serverPort = Integer.parseInt(portNum);
+
 		setTitle("SCIT(\uD559\uC0DD)");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 533, 340);
@@ -206,7 +210,9 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 	private void connectServer() {
 		Socket client = null;
 		try {
-			client = new Socket(SEVER_IP, 7777);
+			System.out.println(SEVER_IP);
+			System.out.println(serverPort);
+			client = new Socket(SEVER_IP, serverPort);
 			oos = new ObjectOutputStream(client.getOutputStream());
 			ois = new ObjectInputStream(client.getInputStream());
 			data = new Data(id, "님이 접속했습니다.", Data.CHAT_LOGIN);
@@ -498,8 +504,10 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 								System.out.println("FILE_DOWN : " + file_str + "\\" + li_fileList.getSelectedValue());
 								System.out.println("FILE_DOWN : " + save.getSelectedFile().getAbsolutePath());
 							}
-						} else {
-
+						} 
+						else 
+						{
+							
 						}
 					} else {
 						System.out.println("파일이 없습니다.");
@@ -533,7 +541,8 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 	public void mouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2) {
 			System.out.println("------------mouseClicked-----------");
-			if (li_fileList.getSelectedValue().equals("..")) {
+			if (li_fileList.getSelectedValue().equals("..")) 
+			{
 				String parent = "";
 				String[] path = file_str.split("\\\\"); // ***파일에서 \\는 찾을 때 \를 기호로 인식하므로 \"처럼 \\\\써야함
 				/*
@@ -545,20 +554,31 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 					parent += ("\\" + path[i]);
 				}
 				file_str = parent;
+				System.out.println(file_str);
 				data = new Data(id, file_str, null, Data.FILE_REQ);
 				sendData(data);
-			} else {
+			} 
+			else 
+			{
 				// System.out.println(file_str+"\\"+li_fileList.getSelectedValue());
-
-				for (Map.Entry<String, Boolean> f : HashMapFileList.entrySet()) {
-					if (f.getKey().equals(li_fileList.getSelectedValue())) {
-						if (f.getValue()) {
+				System.out.println(HashMapFileList.size());
+				for (Map.Entry<String, Boolean> f : HashMapFileList.entrySet()) 
+				{
+					System.out.println("경로경로" + file_str);
+					if (f.getKey().equals(li_fileList.getSelectedValue())) 
+					{
+						if (f.getValue()) 
+						{
 							System.out.println("11111111");
 							data = new Data(id, file_str + "\\" + li_fileList.getSelectedValue(), null, Data.FILE_REQ);
 							System.out.println("click : " + data.getMessage());
-						} else {
+							sendData(data);
+						} 
+						else 
+						{
 							System.out.println("2222222222");
 							data = new Data(id, file_str + "\\" + li_fileList.getSelectedValue(), null, Data.FILE_DOWN);
+							sendData(data);
 						}
 					}
 
@@ -580,8 +600,6 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 				 * 
 				 * }
 				 */
-				sendData(data);
-
 				/*
 				 * if(file.isDirectory()) { file_access += "\\"+li_fileList.getSelectedValue();
 				 * }

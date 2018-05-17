@@ -21,6 +21,8 @@ class Myframe10 extends JFrame implements ActionListener
 {
 	JButton b1, b2;
 	JTextField j2, j3, j4, j5; 
+	String ipAddress;
+	String portNum;
 	
 	public Myframe10()
 	{
@@ -45,6 +47,8 @@ class Myframe10 extends JFrame implements ActionListener
 		JLabel l4 = new JLabel("포트");
 		l4.setPreferredSize(new Dimension(30, 20));
 		j5 = new JTextField(5);
+		j5.setEditable(true);
+
 		p2.add(l2);
 		p2.add(j2);
 		p2.add(l4);
@@ -54,7 +58,7 @@ class Myframe10 extends JFrame implements ActionListener
 		JLabel l3 = new JLabel("IP주소");
 		l3.setPreferredSize(new Dimension(60, 20));
 		j4 = new JTextField(15);
-		j4.setText("127.0.0.1");
+		j4.setText("203.233.196.40");
 		j4.setEditable(true);
 		p3.add(l3);
 		p3.add(j4);
@@ -76,7 +80,6 @@ class Myframe10 extends JFrame implements ActionListener
 		pack();
 		setVisible(true);
 		
-		
 	}
 
 	@Override
@@ -88,8 +91,11 @@ class Myframe10 extends JFrame implements ActionListener
 		{
 			String name = j2.getText();
 			this.dispose(); //화면에서 사라짐과 동시에 객체를 소멸시키는 메서드
-			//new StudentChattingMain(name);
-			new TeacherChattingMain(name);
+			ipAddress = j4.getText();
+			portNum = j5.getText();
+			System.out.println(portNum);
+			new StudentChattingMain(name, ipAddress, portNum);
+			//new TeacherChattingMain(name, ipAddress, portNum);
 		}
 		else if(source==b2)
 		{	
