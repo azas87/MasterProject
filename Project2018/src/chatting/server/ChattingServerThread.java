@@ -216,4 +216,8 @@ public class ChattingServerThread implements Runnable {
 		
 		return str[1];
 	}
+	
+	public void insertLog(String result) {
+		dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', result, "18/05/17", "18/05/17"));
+	}
 }
