@@ -21,6 +21,7 @@ public class FileServerThread implements Runnable {
 	private int upDownStatus;
 	private String path;
 	private File file;
+	private long length;
 	
 	public FileServerThread(DataInputStream disSocket, DataOutputStream dosSocket) {
 		this.disSocket = disSocket;
@@ -49,13 +50,15 @@ public class FileServerThread implements Runnable {
 			}
 			else
 			{
+//				length = Long.parseLong(disSocket.readUTF());
 				dosSocket.writeUTF("Y");			// 확인 값 보내고
 				path = disSocket.readUTF();			// 파일 경로 받고
+				System.out.println(path);
 				file = new File(path);
-				if( file.exists() ) {				// 디렉터리가 중간에 삭제 되거나 이름 변경됐을 경우를 대비
+				if( file.getParentFile().exists() ) {				// 디렉터리가 중간에 삭제 되거나 이름 변경됐을 경우를 대비
 					dosSocket.writeUTF("Y");		
 					fileUp();						// 파일 업로드 메서드 호출
-					dosSocket.writeUTF("Y");		// 업로드가 완료되면 확인 메시지 전송
+//					dosSocket.writeUTF("Y");		// 업로드가 완료되면 확인 메시지 전송
 				}
 				else
 					dosSocket.writeUTF("N");		// 디렉터리가 없거나 이름 변경 시 
