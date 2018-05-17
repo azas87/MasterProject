@@ -67,6 +67,7 @@ public class FtpClientThread extends JFrame implements Runnable{
 		}
 		else
 		{
+			// 왜 여기가 합쳐지지 않을까?
 			try 
 			{
 				dos.writeInt(Data.FILE_UP);
