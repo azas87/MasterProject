@@ -54,7 +54,7 @@ public class FtpClientThread extends JFrame implements Runnable{
 				filedownString = SourceFielPath.split("\\|");
 				//System.out.println(filedownString[0]);
 				//System.out.println(filedownString[1]);
-				//filedownString[0] = 파일 경로 filedownString[1] = 저장하고 싶은 위치
+				//filedownString[0] = 파일 경로,  filedownString[1] = 저장하고 싶은 위치
 				dos.writeUTF(filedownString[0]);
 				if(dis.readUTF().equals("Y"))
 				{
@@ -84,6 +84,9 @@ public class FtpClientThread extends JFrame implements Runnable{
 					dos.writeUTF(fileupString[0]);
 					if(dis.readUTF().equals("Y"))
 					{	
+						//프로그레스바 만들기
+						Thread t = new Thread(new TransferProgress(fileSize));
+						t.start();
 						fileUp();
 					}	
 				}	
@@ -105,7 +108,12 @@ public class FtpClientThread extends JFrame implements Runnable{
 			byte[] b = new byte[4096];
 			int c = 0;
 			while( (c=dis.read(b)) != -1 )
+			{
+				totalSize+=c;
 				bosFile.write(b, 0, c);
+				
+				if(isCancel) break;
+			}
 			
 			bosFile.flush();
 			
@@ -126,7 +134,12 @@ public class FtpClientThread extends JFrame implements Runnable{
 			byte[] b = new byte[4096];
 			int c = 0;
 			while( (c=bisFile.read(b)) != -1 )
+			{
+				totalSize+=c;
 				dos.write(b, 0, c);
+				
+				if(isCancel) break;
+			}
 			
 			dos.flush();
 		} catch (FileNotFoundException e) {
@@ -278,5 +291,11 @@ public class FtpClientThread extends JFrame implements Runnable{
 		try { if(bisFile != null) {bisFile.close(); }} catch (IOException e) {}
 		try { if(dis != null) {dis.close();}} catch (IOException e) {}
 		try { if(dos != null) {dos.close(); }} catch (IOException e) {}
+		
+		if(isCancel)
+		{
+			File file = new File(filedownString[1]);
+			file.delete();
+		}
 	}
 }

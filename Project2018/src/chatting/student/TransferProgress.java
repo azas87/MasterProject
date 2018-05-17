@@ -56,9 +56,8 @@ public class TransferProgress extends JFrame implements Runnable, ActionListener
 		int cnt = 0;
 		while( true)
 		{
-			//per = (int)(FtpClientThread.totalSize / p);
-			totalSize+=4096;
-			per = (int)(totalSize / p);
+			per = (int)(FtpClientThread.totalSize / p);
+			//per = (int)(totalSize / p);
 			
 			lbl_per.setText("  "+per+"%   ");
 			jp.setValue(per);
@@ -69,6 +68,7 @@ public class TransferProgress extends JFrame implements Runnable, ActionListener
 				lbl_per.setText(per+"%");
 				jp.setValue(per);
 				jb.setText("확인");
+				jb.repaint();
 				break;
 			}
 			
@@ -82,12 +82,6 @@ public class TransferProgress extends JFrame implements Runnable, ActionListener
 		
 	}
 	
-	public static void main(String[] args) {
-		TransferProgress tp = new TransferProgress(1000000L);
-		Thread t = new Thread(tp);
-		t.start();
-		
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -96,6 +90,7 @@ public class TransferProgress extends JFrame implements Runnable, ActionListener
 		{
 			if(jb.getText().equals("취소"))
 			{
+				FtpClientThread.isCancel = true;
 				
 			}
 			else
