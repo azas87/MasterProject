@@ -47,8 +47,9 @@ public class Log implements Serializable{
 			mask <<= 1;
 		}
 		
-		return String.format("%c¹Ý,%s,%s,%s,%s,%c,%s,y", class_name, name, admin, grant_list, actionList[action], result, logs, dates);
+//		return String.format("%c¹Ý,%s,%s,%s,%s,%c,%s,%s,y", class_name, name, admin, grant_list, actionList[action], result, logs, ipAddr, dates);
 		
+		return String.format("%c¹Ý,%s,%s,%s,%s,%c,%s,%s,y", class_name, name, admin, grant_list, actionList[action], result, logs, ipAddr, dates);
 
 	}
 	

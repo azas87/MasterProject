@@ -12,7 +12,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<select id="listLog" resultType="Log" >
 	
-		SELECT I.NAME, I.CLASS CLASS_NAME, I.ADMIN, I.GRANTS, L.ACTION, L.RESULT, L.LOGS, L.DATES, L.TIME FROM LOG L, INFO I 
+		SELECT I.NAME, I.CLASS CLASS_NAME, I.ADMIN, I.GRANTS, L.ACTION, L.RESULT, L.LOGS, L.IPADDR, L.DATES 
+		FROM LOG L, INFO I 
 		WHERE L.STDNO = I.STDNO
 	</select>
 	
@@ -22,17 +23,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<select id="findLog" parameterType="String" resultType="Log">
 		
-		SELECT I.NAME, I.CLASS CLASS_NAME, I.ADMIN, I.GRANTS, L.ACTION, L.RESULT, L.LOGS, L.DATES, L.TIME FROM LOG L, INFO I 
+		SELECT I.NAME, I.CLASS CLASS_NAME, I.ADMIN, I.GRANTS, L.ACTION, L.RESULT, L.LOGS, L.IPADDR, L.DATES, L.TIME
+		FROM LOG L, INFO I 
 		WHERE L.STDNO = I.STDNO
 		and I.NAME = #{name}
 		
 	</select>
-	
 	
 	<select id="logCount" resultType="Integer">
 	
 		SELECT COUNT(*) FROM LOG
 			
 	</select>
+
+	<select id="findClass" parameterType="String" resultType="Log">
+	
+		SELECT CLASS CLASS_NAME
+		FROM INFO
+		WHERE NAME = #{name}
+	
+	</select>
+	
 	
 </mapper>

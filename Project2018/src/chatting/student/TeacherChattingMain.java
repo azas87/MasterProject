@@ -660,12 +660,12 @@ public class TeacherChattingMain extends JFrame implements ActionListener, Runna
 						ta_chatOutput.append("["+data.getId()+"](±Ó¸»)"+data.getMessage()+"\n");
 						break;
 					case Data.Log_ALL : 
-						String hh [] = {"1", "2", "3", "4", "5", "6", "7", "8"};
+						String hh [] = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
 						header = hh;
 						model = new DefaultTableModel(contents, header);
 						
 						ArrayList<Log> l = data.getLog();
-						contents = new String[l.size()][8];
+						contents = new String[l.size()][9];
 						
 						for(int i = 0 ; i < l.size() ; i++)
 						{

@@ -118,6 +118,7 @@ public class ChattingServerThread implements Runnable {
 						break;
 						
 					case Data.FILE_ACCESS:
+						base_Path += "\\" + dao.findClass(data.getId()).getClass_name() + "¹Ý";
 						path = new File(base_Path);
 						System.out.println(base_Path);
 						data.setFileList(makeFileList(base_Path));
@@ -126,6 +127,7 @@ public class ChattingServerThread implements Runnable {
 						break;
 						
 					case Data.FILE_REQ:
+						
 						data.setStatus(Data.FILE_ACCEPT);
 						data.setFileList(makeFileList(data.getMessage()));
 						broadCasting();
@@ -149,6 +151,11 @@ public class ChattingServerThread implements Runnable {
 						path.delete();
 						getParent();
 //						dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', fileNameSplit(), date.format(new Date()), time.format(new Date())));
+						broadCasting();
+						break;
+						
+					case Data.Log_Search:
+						data.setLog(dao.findLog(data.getId()));
 						broadCasting();
 						break;
 						
@@ -232,6 +239,10 @@ public class ChattingServerThread implements Runnable {
 		return strs[1];
 				
 	}
+	
+//	public void makeBasePath() {
+//		base_Path += "\\" + dao.getClass(data.getId()).getClass_name() + "¹Ý";
+//	}
 	
 	public void insertLog(String result) {
 //		dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()).getStdNo(), dao.logCount()+1, 'o', result, clientIp, "18/05/17", "18/05/17"));
