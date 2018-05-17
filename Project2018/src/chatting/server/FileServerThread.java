@@ -50,7 +50,7 @@ public class FileServerThread implements Runnable {
 			}
 			else
 			{
-//				length = Long.parseLong(disSocket.readUTF());
+				length = disSocket.readLong();
 				dosSocket.writeUTF("Y");			// 확인 값 보내고
 				path = disSocket.readUTF();			// 파일 경로 받고
 				System.out.println(path);
