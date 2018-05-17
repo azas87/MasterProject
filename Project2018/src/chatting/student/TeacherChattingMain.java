@@ -1,19 +1,17 @@
 package chatting.student;
 
 import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -28,9 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.StringTokenizer;
 
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -58,21 +54,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import chatting.data.Data;
 import chatting.data.Log;
-
-import java.awt.FlowLayout;
-
-import javax.swing.DefaultListModel;
-import javax.swing.DropMode;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Component;
-import java.awt.ComponentOrientation;
-import java.awt.Label;
-import javax.swing.border.LineBorder;
-import java.awt.GridLayout;
-import java.awt.TextField;
-import java.awt.Button;
-import javax.swing.BoxLayout;
 
 public class TeacherChattingMain extends JFrame implements ActionListener, Runnable, MouseListener {
 

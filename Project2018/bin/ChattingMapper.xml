@@ -5,13 +5,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="chatting.dao.ChattingMapper">
 	
 	<insert id="insertLog" parameterType="Log">
-		INSERT INTO LOG VALUES(#{logNo}, #{stdNo},#{action},#{result},#{logs},to_date(#{dates},'yyyy/MM/dd'),to_date(#{time},'yyyy/MM/dd'))
+		INSERT INTO LOG VALUES(#{logNo}, #{stdNo}, #{action}, #{result}, #{logs}, #{ipAddr},
+						to_date(#{dates},'yyyy/MM/dd'), to_date(#{time},'yyyy/MM/dd'))
 	</insert>
 	
 	
 	<select id="listLog" resultType="Log" >
 	
-		SELECT I.NAME, I.CLASS CLASS_NAME, I.ADMIN, I.GRANTS, L.ACTION, L.RESULT, L.LOGS, L.DATES, L.TIME FROM LOG L, INFO I WHERE L.STDNO = I.STDNO
+		SELECT I.NAME, I.CLASS CLASS_NAME, I.ADMIN, I.GRANTS, L.ACTION, L.RESULT, L.LOGS, L.DATES, L.TIME FROM LOG L, INFO I 
+		WHERE L.STDNO = I.STDNO
 	</select>
 	
 	<select id="getStdNo" parameterType="String" resultType="Log">
@@ -20,8 +22,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<select id="findLog" parameterType="String" resultType="Log">
 		
-		SELECT I.NAME, I.CLASS CLASS_NAME, I.ADMIN, I.GRANTS, L.ACTION, L.RESULT, L.LOGS, L.DATES, L.TIME FROM LOG L, INFO I WHERE L.STDNO = I.STDNO
-		WHERE I.NAME = #{name}
+		SELECT I.NAME, I.CLASS CLASS_NAME, I.ADMIN, I.GRANTS, L.ACTION, L.RESULT, L.LOGS, L.DATES, L.TIME FROM LOG L, INFO I 
+		WHERE L.STDNO = I.STDNO
+		and I.NAME = #{name}
 		
 	</select>
 	

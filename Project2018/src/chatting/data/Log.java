@@ -1,11 +1,6 @@
 package chatting.data;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Scanner;
 
 public class Log implements Serializable{
 	private String name;
@@ -19,17 +14,19 @@ public class Log implements Serializable{
 	private String logs;
 	private String dates;
 	private String time;
+	private String ipAddr;
 	
 	private String grantList[] = {"立加","诀","促款","积己", "昏力"};
 	private String actionList[] = {"秦力","立加","积己","昏力", "诀肺靛", "促款肺靛"};
 	
 	public Log() {}
-	public Log(int action, String stdNo, int logNo, char result, String logs, String dates, String time) {
+	public Log(int action, String stdNo, int logNo, char result, String logs, String ipAddr, String dates, String time) {
 		this.action = action;
 		this.stdNo = stdNo;
 		this.logNo = logNo;
 		this.result = result;
 		this.logs = logs;
+		this.ipAddr = ipAddr;
 		this.dates = dates;
 		this.time = time;
 	}
@@ -175,11 +172,12 @@ public class Log implements Serializable{
 	public void setActionList(String[] actionList) {
 		this.actionList = actionList;
 	}
-	
-	
-	
-
-	
+	public String getIpAddr() {
+		return ipAddr;
+	}
+	public void setIpAddr(String ipAddr) {
+		this.ipAddr = ipAddr;
+	}
 	
 	
 }
