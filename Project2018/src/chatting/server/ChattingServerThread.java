@@ -64,6 +64,7 @@ public class ChattingServerThread implements Runnable {
 //						System.out.println("fefefe");
 						//dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', "立加", date.format(new Date()), time.format(new Date())));
 //						System.out.println("grgrgrg");
+						insertLog("立加 "+ clientIp);
 						broadCasting();
 						break;
 						
