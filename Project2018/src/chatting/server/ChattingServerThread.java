@@ -63,6 +63,7 @@ public class ChattingServerThread implements Runnable {
 						System.out.println();
 //						System.out.println("fefefe");
 //						dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', "立加", date.format(new Date()), time.format(new Date())));
+						insertLog("立加 "+ clientIp);
 //						System.out.println("grgrgrg");
 						broadCasting();
 						break;
@@ -218,5 +219,9 @@ public class ChattingServerThread implements Runnable {
 		String[] str = data.getMessage().split("IT_Master");
 		
 		return str[1];
+	}
+	
+	public void insertLog(String result) {
+		dao.insertLog(new Log(data.getStatus(), dao.getStdNo(data.getId()), dao.logCount()+1, 'o', result, "18/05/17", "18/05/17"));
 	}
 }
