@@ -47,6 +47,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
 import chatting.data.Data;
+import jdk.nashorn.internal.scripts.JO;
 
 public class StudentChattingMain extends JFrame implements ActionListener, Runnable, MouseListener {
 	// 찬주 테스트
@@ -58,9 +59,10 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 	private JButton btn_send;
 	private JButton btn_filelist;
 	private JPanel p_east;
-	private JLabel lbl_count;
+	private JLabel lbl_filelist;
 	private JScrollPane sp_userList;
 	private JList li_fileList;
+	private JList li_userList;
 	private String id;
 
 	private ObjectInputStream ois;
@@ -104,7 +106,8 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 	private String sendFile_amount;
 	private int serverPort;
 	private JScrollPane sp_personlist;
-	private JList list_person;
+	private JPanel panel_1;
+	private JLabel lbl_count;
 	
 	/**
 	 * private FtpClientThread cst; Launch the application.
@@ -121,7 +124,7 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 
 		setTitle("SCIT(\uD559\uC0DD)");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 689, 431);
+		setBounds(100, 100, 1000, 475);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -131,7 +134,7 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 		sp_chatOutput.setPreferredSize(new Dimension(220, 2));
 		sp_chatOutput.setSize(new Dimension(130, 0));
 		sp_chatOutput.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		contentPane.add(sp_chatOutput, BorderLayout.WEST);
+		contentPane.add(sp_chatOutput, BorderLayout.CENTER);
 
 		ta_chatOutput = new JTextArea();
 		ta_chatOutput.setEditable(false);
@@ -148,7 +151,7 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 		p_south.add(tf_chatInput, BorderLayout.CENTER);
 		tf_chatInput.setColumns(25);
 
-		btn_send = new JButton("\uC804\uC1A1");
+		btn_send = new JButton("\uADD3\uB9D0");
 		btn_send.addActionListener(this);
 		p_south.add(btn_send, BorderLayout.EAST);
 
@@ -161,10 +164,10 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 		p_east.add(panel, BorderLayout.NORTH);
 		panel.setLayout(new BorderLayout(0, 0));
 
-		lbl_count = new JLabel("\uD30C\uC77C\uBAA9\uB85D");
-		lbl_count.setPreferredSize(new Dimension(110, 25));
-		panel.add(lbl_count, BorderLayout.NORTH);
-		lbl_count.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_filelist = new JLabel("\uD30C\uC77C\uBAA9\uB85D");
+		lbl_filelist.setPreferredSize(new Dimension(110, 25));
+		panel.add(lbl_filelist, BorderLayout.NORTH);
+		lbl_filelist.setHorizontalAlignment(SwingConstants.CENTER);
 
 		b_upload = new JButton("\uC5C5\uB85C\uB4DC");
 		b_upload.setActionCommand("");
@@ -198,13 +201,25 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 		li_fileList.addMouseListener(this);
 		sp_userList.setViewportView(li_fileList);
 		
+		panel_1 = new JPanel();
+		contentPane.add(panel_1, BorderLayout.WEST);
+		panel_1.setLayout(new BorderLayout(0, 0));
+		
+		lbl_count = new JLabel("\uC804\uCCB4\uC778\uC6D0");
+		lbl_count.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_count.setPreferredSize(new Dimension(57, 25));
+		panel_1.add(lbl_count, BorderLayout.NORTH);
+		
 		sp_personlist = new JScrollPane();
+		panel_1.add(sp_personlist);
 		sp_personlist.setPreferredSize(new Dimension(220, 2));
 		sp_personlist.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		contentPane.add(sp_personlist, BorderLayout.CENTER);	
-		list_person = new JList();
-		sp_personlist.add(list_person);
-		sp_personlist.setViewportView(list_person);
+		li_userList = new JList();
+		sp_personlist.add(li_userList);
+		sp_personlist.setViewportView(li_userList);
+		
+		setLocationRelativeTo(null);
+		
 		setVisible(true);
 		connectServer();		
 		
@@ -227,7 +242,7 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 			client = new Socket(SEVER_IP, serverPort);
 			oos = new ObjectOutputStream(client.getOutputStream());
 			ois = new ObjectInputStream(client.getInputStream());
-			data = new Data(id, "님이 접속했습니다.", Data.CHAT_LOGIN);
+			data = new Data(id, "접속 확인 ", Data.CHAT_LOGIN);
 			Thread t = new Thread(this);
 			t.start();
 
@@ -270,11 +285,22 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 			sendData(data);
 			tf_chatInput.setText("");
 		} else if (source == btn_send) {
-			String message1 = tf_chatInput.getText();
-			// ta_chatOutput.append("["+id+"]" + message1 +"\n");
-			data = new Data(id, message1, Data.CHAT_MESSAGE);
-			sendData(data);
-			tf_chatInput.setText("");
+			System.out.println("btn_send");
+			String targetId = (String)li_userList.getSelectedValue();
+			if(targetId == null)
+			{
+				JOptionPane.showConfirmDialog(this, "귓말을 보낼 대상을 선택하시오","ERROR", JOptionPane.WARNING_MESSAGE);
+				
+			}	
+			else
+			{
+				String message1 = tf_chatInput.getText();
+				data = new Data(id, message1, targetId, Data.CHAT_WHISPER); /****************/
+				sendData(data);
+				ta_chatOutput.append("[" + data.getId() + "] (귓말) " + data.getMessage() + "\n");
+			}	
+			
+			tf_chatInput.requestFocus();
 		} else if (source == b_filelist) {
 			System.out.println("btn_filelist");
 			data = new Data(id, null, Data.FILE_ACCESS);
@@ -462,11 +488,32 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 				data = (Data) ois.readObject();
 				switch (data.getStatus()) {
 				case Data.CHAT_LOGIN:
+					
+					if(data.getTargetId()!=null)
+					{
+						System.out.println("id가 올바르지 않음");
+						JOptionPane.showMessageDialog(null, "권한이 없는 사용자 입니다");
+						System.exit(0);
+					}
+					else
+					{
+						
+						ta_chatOutput.append("[" + data.getId() + "] " + data.getMessage() + "\n");
+						li_userList.setListData(data.getUserList());
+						lbl_count.setText("전체인원  " + data.getUserList().size() + "명" );
+						
+						data = new Data(id, null, null, Data.FILE_ACCESS);
+						sendData(data);
+					}
+					break;
 				case Data.CHAT_LOGOUT:
 					ta_chatOutput.append("[" + data.getId() + "]" + data.getMessage() + "\n");
+					li_userList.setListData(data.getUserList());
+					lbl_count.setText("전체인원  " + data.getUserList().size() + "명" );
 					break;
 
 				case Data.CHAT_MESSAGE:
+					System.out.println("Data.CHAT_MESSAGE : " + data.getId() + " " + data.getMessage());
 					ta_chatOutput.append("[" + data.getId() + "]" + data.getMessage() + "\n");
 					tf_chatInput.setText("");
 
@@ -530,7 +577,8 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 				case Data.FILE_UP:
 					fileServer_port = Integer.parseInt(data.getTargetId());
 					JFileChooser send = new JFileChooser();
-					if (send.showOpenDialog(this) == send.APPROVE_OPTION) {
+					if (send.showOpenDialog(this) == send.APPROVE_OPTION) 
+					{
 
 						sendFile_path = file_str + "\\" + send.getSelectedFile().getName();
 						File file = new File(send.getSelectedFile().getPath());
@@ -542,12 +590,14 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 					} else {
 						System.out.println("파일 업로드 취소");
 					}
+					break;
 				}
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 				exit = true;
+				
 			} 
 		}
 		closeAll();
@@ -555,7 +605,8 @@ public class StudentChattingMain extends JFrame implements ActionListener, Runna
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (e.getClickCount() == 2) {
+		if (e.getClickCount() == 2) 
+		{
 			System.out.println("------------mouseClicked-----------");
 			if (li_fileList.getSelectedValue().equals("..")) 
 			{

@@ -8,6 +8,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -27,6 +29,7 @@ class Myframe10 extends JFrame implements ActionListener
 		setTitle("Login Page");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false); // 크기변경X
+		setLocationRelativeTo(null);
 		setLayout(new BorderLayout());
 		
 		JPanel p1 = new JPanel();
@@ -77,6 +80,13 @@ class Myframe10 extends JFrame implements ActionListener
 		p5.add(b2);
 		add(p5, BorderLayout.SOUTH);
 		
+		addWindowListener(new WindowAdapter() {
+			public void windowOpened(WindowEvent e) {
+				j4.requestFocus();
+			}
+
+		});
+		
 		pack();
 		setVisible(true);
 		
@@ -94,8 +104,8 @@ class Myframe10 extends JFrame implements ActionListener
 			ipAddress = j2.getText();
 			portNum = j5.getText();
 			System.out.println(portNum);
-			new StudentChattingMain(name, ipAddress, portNum);
-//			new TeacherChattingMain(name, ipAddress, portNum);
+			//new StudentChattingMain(name, ipAddress, portNum);
+			new TeacherChattingMain(name, ipAddress, portNum);
 		}
 		else if(source==b2)
 		{	

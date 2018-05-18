@@ -294,6 +294,7 @@ public class FtpClientThread extends JFrame implements Runnable{
 		
 		if(isCancel)
 		{
+			System.out.println("파일 전송 취소");
 			File file = new File(filedownString[1]);
 			file.delete();
 		}

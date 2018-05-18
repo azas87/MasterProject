@@ -18,7 +18,7 @@ public class Log implements Serializable{
 	
 	private String grantList[] = {"접속","업","다운","생성", "삭제"};
 //	private String actionList[] = {"해제","접속","생성","삭제", "업로드", "다운로드"};
-	private String actionList[] = {"접속","일반 메시지","귓말 메시지","해제","삭제","생성","로그 출력","리스트 갱신","리스트 수신","리스트 요청","다운로드","업로드","로그 검색"};
+	private String actionList[] = {"","접속","일반 메시지","귓말 메시지","해제","삭제","생성","로그 출력","리스트 요청","리스트 수신","리스트 접근","다운로드","업로드","로그 검색"};
 	
 	public Log() {}
 	public Log(int action, String stdNo, int logNo, char result, String logs, String ipAddr, String dates, String time) {
@@ -50,7 +50,7 @@ public class Log implements Serializable{
 		
 //		return String.format("%c반,%s,%s,%s,%s,%c,%s,%s,y", class_name, name, admin, grant_list, actionList[action], result, logs, ipAddr, dates);
 		
-		return String.format("%c반,%s,%s,%s,%s,%c,%s,%s,y", class_name, name, admin, grant_list, actionList[action], result, logs, ipAddr, dates);
+		return String.format("%c반,%s,%s,%s,%s,%c,%s,%s,%s,%s", class_name, name, admin, grant_list, actionList[action], result, logs, ipAddr, dates, time);
 
 	}
 	

@@ -10,9 +10,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
-import chatting.server.LoginServerUI;
-import javafx.scene.control.ProgressBar;
-
 public class TransferProgress extends JFrame implements Runnable, ActionListener
 {
 	private long fileSize;
@@ -30,7 +27,7 @@ public class TransferProgress extends JFrame implements Runnable, ActionListener
 		setTitle("파일 전송");
 		getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		
+		setLocationRelativeTo(null);
 		
 		
 		jp = new JProgressBar();
@@ -53,16 +50,19 @@ public class TransferProgress extends JFrame implements Runnable, ActionListener
 	public void run() {
 		// TODO Auto-generated method stub
 		long p = (fileSize/100L);
-		int cnt = 0;
+		
+		if(p == 0) p = 1L;
+		
 		while( true)
 		{
 			per = (int)(FtpClientThread.totalSize / p);
-			//per = (int)(totalSize / p);
 			
 			lbl_per.setText("  "+per+"%   ");
 			jp.setValue(per);
 			
-			if( (totalSize >= fileSize) )
+			System.out.println("totalSize : " + totalSize + ", fileSize : " + fileSize);
+			//if( (totalSize >= fileSize) )
+			if(per >= 100)
 			{
 				per = 100;
 				lbl_per.setText(per+"%");
@@ -73,7 +73,7 @@ public class TransferProgress extends JFrame implements Runnable, ActionListener
 			}
 			
 			try {
-				Thread.sleep(500);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -91,7 +91,6 @@ public class TransferProgress extends JFrame implements Runnable, ActionListener
 			if(jb.getText().equals("취소"))
 			{
 				FtpClientThread.isCancel = true;
-				
 			}
 			else
 			{
